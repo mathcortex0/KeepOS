@@ -106,8 +106,6 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
 .empty-state p{font-size:.9rem;color:var(--t3);margin-bottom:20px}
 .skeleton-card{height:100px;background:linear-gradient(90deg,var(--hov) 25%,#e8eaed 50%,var(--hov) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--rl)}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* EDITOR */
 .editor-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:3000;display:none;flex-direction:column}
 .editor-overlay.open{display:flex}
 .editor-header{background:var(--surf);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
@@ -127,7 +125,7 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
 .tb-btn{width:36px;height:36px;border:none;background:none;border-radius:var(--r);cursor:pointer;color:var(--t3);display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all var(--tr);font-family:var(--gs);font-weight:600}
 .tb-btn:hover{background:var(--surf);color:var(--t1)}
 .tb-btn svg{width:16px;height:16px}
-.tb-btn.active-btn{background:var(--accent);color:#fff;border-radius:var(--r)}
+.tb-btn.active-btn{background:var(--accent);color:#fff}
 .tb-sep{width:1px;height:24px;background:var(--border);margin:6px 4px}
 .editor-area{padding:20px;min-height:300px;outline:none;font-family:var(--gs);font-size:.95rem;color:var(--t1);line-height:1.8}
 .editor-area:empty:before{content:'Start writing...';color:var(--t4)}
@@ -138,6 +136,8 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
 .editor-area pre{background:var(--hov);padding:12px;border-radius:var(--r);overflow-x:auto;font-family:var(--mono);font-size:.8rem}
 .editor-area table{border-collapse:collapse;width:100%;margin:10px 0}
 .editor-area table td,.editor-area table th{border:1px solid var(--border);padding:6px 10px;min-width:60px}
+.html-source-area{display:none;width:100%;min-height:300px;padding:20px;font-family:var(--mono);font-size:.82rem;color:var(--t1);line-height:1.6;border:none;outline:none;resize:vertical;background:var(--hov)}
+.html-source-area.show{display:block}
 .editor-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
 .editor-footer .btn-sm{min-height:40px}
 .spinner-inline{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
@@ -146,11 +146,6 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
 .note-link-card svg{width:20px;height:20px;flex-shrink:0;color:var(--t4)}
 .note-link-card a{color:var(--accent);text-decoration:none;font-weight:500;word-break:break-all}
 .note-link-card a:hover{text-decoration:underline}
-
-/* HTML Source Textarea */
-.html-source-area{display:none;width:100%;min-height:300px;padding:20px;font-family:var(--mono);font-size:.82rem;color:var(--t1);line-height:1.6;border:none;outline:none;resize:vertical;background:var(--hov);border-radius:0 0 var(--r) var(--r)}
-.html-source-area.open{display:block}
-
 .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
 .footer-inner{max-width:1080px;margin:0 auto;padding:40px 24px 24px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
 .fc h4{font-family:var(--serif);font-size:.95rem;font-weight:600;color:var(--t2);margin-bottom:12px}
@@ -219,7 +214,6 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
   </div>
 </main>
 
-<!-- EDITOR OVERLAY -->
 <div class="editor-overlay" id="editorOverlay">
   <div class="editor-header">
     <h3 id="editorTitle">New Note</h3>
@@ -284,12 +278,12 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
 
 <footer class="footer">
   <div class="footer-inner">
-    <div class="fc"><div class="footer-brand"><img src="/images/keepos.png" alt="KeepOS" height="24" style="border-radius:50%" onerror="this.style.display='none'"><span style="font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--t2)">KeepOS</span></div><p>Your personal knowledge vault. Organize, write, and search — all in one place.</p></div>
+    <div class="fc"><div class="footer-brand"><img src="/images/keepos.png" alt="KeepOS" height="24" style="border-radius:50%" onerror="this.style.display='none'"><span style="font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--t2)">KeepOS</span></div><p>Your personal knowledge vault.</p></div>
     <div class="fc"><h4>Platform</h4><a href="/index.html">Dashboard</a><a href="/search.html">Search</a></div>
     <div class="fc"><h4>Support</h4><a href="#">Help</a><a href="#">Contact</a></div>
     <div class="fc"><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a></div>
   </div>
-  <div class="footer-bottom"><span>&copy; 2025 KeepOS. All rights reserved.</span><div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+  <div class="footer-bottom"><span>&copy; 2025 KeepOS.</span><div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
 </footer>
 <div class="toast" id="toast"></div>
 
@@ -324,7 +318,6 @@ async function api(method, path, body) {
 }
 function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 function esc(s) { const d = document.createElement('div'); d.textContent = String(s || ''); return d.innerHTML; }
-
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); document.getElementById('mainContent').classList.toggle('shifted'); }
 function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); document.getElementById('mainContent').classList.remove('shifted'); }
 function toggleAvatarMenu() { document.getElementById('avatarMenu').classList.toggle('open'); }
@@ -370,10 +363,10 @@ function renderNotes() {
     }
     return `<div class="note-card" id="note-${n.id}">
       <div class="note-actions">
-        <button class="icon-btn-sm" onclick="moveNote(${n.id},'up')" title="Move up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
-        <button class="icon-btn-sm" onclick="moveNote(${n.id},'down')" title="Move down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
-        <button class="icon-btn-sm" onclick="openEditor(${n.id})" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-        <button class="icon-btn-sm" onclick="deleteNote(${n.id})" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+        <button class="icon-btn-sm" onclick="moveNote(${n.id},'up')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
+        <button class="icon-btn-sm" onclick="moveNote(${n.id},'down')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <button class="icon-btn-sm" onclick="openEditor(${n.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="icon-btn-sm" onclick="deleteNote(${n.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
       </div>
       <div class="note-header"><span class="note-title">${esc(n.title)}</span><span class="note-type-badge type-${n.type}">${n.type}</span></div>
       <div class="note-body">${bodyHtml}</div>
@@ -397,14 +390,13 @@ function initSmiles() {
   });
 }
 
-// ==================== EDITOR FUNCTIONS ====================
+// ==================== EDITOR ====================
 
 function openEditor(id) {
   editingNoteId = id || null;
   currentNoteType = 'text';
   isPreviewMode = false;
   isHTMLSourceMode = false;
-  
   document.getElementById('editorTitle').textContent = id ? 'Edit Note' : 'New Note';
   document.getElementById('noteTitle').value = '';
   document.getElementById('editorArea').innerHTML = '';
@@ -412,7 +404,6 @@ function openEditor(id) {
   document.getElementById('noteUrl').value = '';
   document.getElementById('imagePreview').innerHTML = '';
   document.getElementById('noteImageFile').value = '';
-
   if (id) {
     const n = notes.find(x => x.id === id);
     if (n) {
@@ -425,54 +416,52 @@ function openEditor(id) {
       }
     }
   }
-
   setNoteTypeUI(currentNoteType);
-  resetEditorUI();
+  resetEditorModes();
   document.getElementById('editorOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
   setTimeout(() => document.getElementById('noteTitle').focus(), 100);
 }
 
 function closeEditor() {
-  isPreviewMode = false;
-  isHTMLSourceMode = false;
   document.getElementById('editorOverlay').classList.remove('open');
   document.body.style.overflow = '';
   editingNoteId = null;
+  isPreviewMode = false;
+  isHTMLSourceMode = false;
 }
 
-function resetEditorUI() {
+function resetEditorModes() {
+  isPreviewMode = false;
+  isHTMLSourceMode = false;
   const editorArea = document.getElementById('editorArea');
   const htmlSourceArea = document.getElementById('htmlSourceArea');
   const previewBtn = document.getElementById('previewBtn');
   const htmlSourceBtn = document.getElementById('htmlSourceBtn');
-  
-  isPreviewMode = false;
-  isHTMLSourceMode = false;
+  const toolbar = document.getElementById('editorToolbar');
   
   editorArea.style.display = 'block';
   editorArea.contentEditable = 'true';
   htmlSourceArea.style.display = 'none';
-  htmlSourceArea.classList.remove('open');
+  htmlSourceArea.classList.remove('show');
+  toolbar.style.display = (currentNoteType === 'link' || currentNoteType === 'image') ? 'none' : 'flex';
   
   previewBtn.classList.remove('active-btn');
   previewBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
   previewBtn.title = 'Preview';
+  previewBtn.style.display = '';
   
   htmlSourceBtn.classList.remove('active-btn');
   htmlSourceBtn.title = 'HTML Source';
+  htmlSourceBtn.style.display = '';
 }
 
 function togglePreview() {
+  if (isHTMLSourceMode) toggleHTMLSource();
+  
   const editorArea = document.getElementById('editorArea');
-  const htmlSourceArea = document.getElementById('htmlSourceArea');
   const previewBtn = document.getElementById('previewBtn');
   const toolbar = document.getElementById('editorToolbar');
-  
-  // Exit HTML source mode if active
-  if (isHTMLSourceMode) {
-    toggleHTMLSource();
-  }
   
   isPreviewMode = !isPreviewMode;
   
@@ -486,8 +475,6 @@ function togglePreview() {
     previewBtn.classList.add('active-btn');
     previewBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
     previewBtn.title = 'Edit';
-    
-    // Render KaTeX in preview
     if (typeof renderMathInElement !== 'undefined') {
       renderMathInElement(editorArea, { delimiters: [{left: '$', right: '$', display: false}] });
     }
@@ -505,74 +492,60 @@ function togglePreview() {
 }
 
 function toggleHTMLSource() {
+  if (isPreviewMode) togglePreview();
+  
   const editorArea = document.getElementById('editorArea');
   const htmlSourceArea = document.getElementById('htmlSourceArea');
   const htmlSourceBtn = document.getElementById('htmlSourceBtn');
   const previewBtn = document.getElementById('previewBtn');
-  
-  // Exit preview mode if active
-  if (isPreviewMode) {
-    togglePreview();
-  }
+  const toolbar = document.getElementById('editorToolbar');
   
   isHTMLSourceMode = !isHTMLSourceMode;
   
   if (isHTMLSourceMode) {
-    // Copy editor content to textarea
     htmlSourceArea.value = editorArea.innerHTML;
     editorArea.style.display = 'none';
     htmlSourceArea.style.display = 'block';
-    htmlSourceArea.classList.add('open');
+    htmlSourceArea.classList.add('show');
     htmlSourceBtn.classList.add('active-btn');
-    htmlSourceBtn.title = 'Visual Editor';
-    document.getElementById('editorToolbar').style.display = 'none';
+    toolbar.style.display = 'none';
     previewBtn.style.display = 'none';
   } else {
-    // Copy textarea content back to editor
     editorArea.innerHTML = htmlSourceArea.value;
     editorArea.style.display = 'block';
     htmlSourceArea.style.display = 'none';
-    htmlSourceArea.classList.remove('open');
+    htmlSourceArea.classList.remove('show');
     htmlSourceBtn.classList.remove('active-btn');
-    htmlSourceBtn.title = 'HTML Source';
-    document.getElementById('editorToolbar').style.display = 'flex';
+    toolbar.style.display = 'flex';
     previewBtn.style.display = '';
   }
 }
 
-function setNoteType(type) {
-  currentNoteType = type;
-  setNoteTypeUI(type);
-}
+function setNoteType(type) { currentNoteType = type; setNoteTypeUI(type); }
 
 function setNoteTypeUI(type) {
   document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('active'));
   document.querySelector(`.type-chip[data-type="${type}"]`)?.classList.add('active');
   document.getElementById('linkOnlyField').style.display = type === 'link' ? 'block' : 'none';
   document.getElementById('imageOnlyField').style.display = type === 'image' ? 'block' : 'none';
-  
   const toolbar = document.getElementById('editorToolbar');
   const editorArea = document.getElementById('editorArea');
   const previewBtn = document.getElementById('previewBtn');
   const htmlSourceBtn = document.getElementById('htmlSourceBtn');
-  
   if (type === 'link' || type === 'image') {
     toolbar.style.display = 'none';
     editorArea.style.display = 'none';
     previewBtn.style.display = 'none';
     htmlSourceBtn.style.display = 'none';
   } else {
-    toolbar.style.display = 'flex';
-    editorArea.style.display = 'block';
+    if (!isPreviewMode && !isHTMLSourceMode) toolbar.style.display = 'flex';
+    if (!isHTMLSourceMode) editorArea.style.display = 'block';
     previewBtn.style.display = '';
     htmlSourceBtn.style.display = '';
   }
 }
 
-function execCmd(command, value) {
-  document.execCommand(command, false, value || null);
-  document.getElementById('editorArea').focus();
-}
+function execCmd(command, value) { document.execCommand(command, false, value || null); document.getElementById('editorArea').focus(); }
 
 function execHeading(level) {
   const sel = window.getSelection();
@@ -592,70 +565,37 @@ function execHeading(level) {
   document.getElementById('editorArea').focus();
 }
 
-function insertTable() {
-  const html = '<table><tbody><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><p><br></p>';
-  document.execCommand('insertHTML', false, html);
-}
-
-function insertCode() {
-  const sel = window.getSelection();
-  if (sel.rangeCount && sel.toString().trim()) {
-    const text = sel.toString();
-    document.execCommand('insertHTML', false, `<pre><code>${esc(text)}</code></pre>`);
-  } else {
-    document.execCommand('insertHTML', false, '<pre><code>// your code here</code></pre>');
-  }
-}
-
-function insertLink() {
-  const url = prompt('Enter URL:', 'https://');
-  if (url) {
-    const sel = window.getSelection();
-    if (sel.rangeCount && sel.toString().trim()) {
-      document.execCommand('createLink', false, url);
-    } else {
-      document.execCommand('insertHTML', false, `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>`);
-    }
-  }
-}
-
+function insertTable() { document.execCommand('insertHTML', false, '<table><tbody><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><p><br></p>'); }
+function insertCode() { const sel = window.getSelection(); const text = sel.toString().trim(); document.execCommand('insertHTML', false, text ? `<pre><code>${esc(text)}</code></pre>` : '<pre><code>// code</code></pre>'); }
+function insertLink() { const url = prompt('Enter URL:', 'https://'); if (url) { document.execCommand('createLink', false, url); } }
 function triggerImageUpload() { document.getElementById('hiddenImageInput').click(); }
 
 async function handleImageUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 10 * 1024 * 1024) { showToast('Image too large. Max 10MB.'); return; }
-  showToast('Uploading image...');
+  if (file.size > 10*1024*1024) { showToast('Image too large. Max 10MB.'); return; }
+  showToast('Uploading...');
   const reader = new FileReader();
   reader.onload = async function(e) {
-    const base64 = e.target.result;
-    const res = await api('POST', '/upload/image', { imageBase64: base64 });
-    if (!res.ok) { showToast(res.data.error || 'Upload failed. Check ImgBB API key in Settings.'); return; }
+    const res = await api('POST', '/upload/image', { imageBase64: e.target.result });
+    if (!res.ok) { showToast(res.data.error || 'Upload failed.'); return; }
     document.execCommand('insertHTML', false, `<img src="${esc(res.data.url)}" alt="Image">`);
     showToast('Image uploaded.');
   };
   reader.readAsDataURL(file);
 }
 
-function insertEquation() {
-  const eq = prompt('Enter LaTeX equation (without $ delimiters):', 'E = mc^2');
-  if (eq) {
-    document.execCommand('insertHTML', false, `<span class="eq">$${esc(eq)}$</span>`);
-  }
-}
+function insertEquation() { const eq = prompt('LaTeX:', 'E=mc^2'); if (eq) document.execCommand('insertHTML', false, `<span class="eq">$${esc(eq)}$</span>`); }
 
 function insertSmiles() {
-  const smiles = prompt('Enter SMILES string:', 'CCO');
-  if (smiles) {
-    const id = 'smiles-' + Date.now();
-    document.execCommand('insertHTML', false, `<span class="smiles-placeholder" id="${id}" data-smiles="${esc(smiles)}" style="display:inline-block;width:200px;height:200px;border:1px solid var(--border);border-radius:var(--r);vertical-align:middle"></span>`);
+  const s = prompt('SMILES:', 'CCO');
+  if (s) {
+    const id = 'smi-'+Date.now();
+    document.execCommand('insertHTML', false, `<span class="smiles-placeholder" id="${id}" data-smiles="${esc(s)}" style="display:inline-block;width:200px;height:200px;border:1px solid var(--border);border-radius:var(--r)"></span>`);
     setTimeout(() => {
       const el = document.getElementById(id);
       if (el && typeof SmilesDrawer !== 'undefined') {
-        try {
-          const drawer = new SmilesDrawer.Drawer({ width: 200, height: 200 });
-          SmilesDrawer.parse(smiles, function(tree) { drawer.draw(tree, el, 'light', false); });
-        } catch(e) {}
+        try { const d = new SmilesDrawer.Drawer({width:200,height:200}); SmilesDrawer.parse(s, t=>d.draw(t,el,'light',false)); } catch(e) {}
       }
     }, 100);
   }
@@ -663,95 +603,42 @@ function insertSmiles() {
 
 async function saveNote() {
   const title = document.getElementById('noteTitle').value.trim();
-  if (!title) { showToast('Please enter a title.'); return; }
-
-  // If HTML source mode is active, sync content back
-  if (isHTMLSourceMode) {
-    document.getElementById('editorArea').innerHTML = document.getElementById('htmlSourceArea').value;
-  }
-
+  if (!title) { showToast('Enter a title.'); return; }
+  if (isHTMLSourceMode) { document.getElementById('editorArea').innerHTML = document.getElementById('htmlSourceArea').value; }
+  
   const type = currentNoteType;
-  let content_html = '';
-  let url = '';
-  let image_url = '';
-
-  if (type === 'text' || type === 'mixed') {
-    content_html = document.getElementById('editorArea').innerHTML;
-  }
-  if (type === 'link') {
-    url = document.getElementById('noteUrl').value.trim();
-    if (!url) { showToast('Please enter a URL.'); return; }
-  }
+  let content_html = '', url = '', image_url = '';
+  if (type === 'text' || type === 'mixed') content_html = document.getElementById('editorArea').innerHTML;
+  if (type === 'link') { url = document.getElementById('noteUrl').value.trim(); if (!url) { showToast('Enter URL.'); return; } }
   if (type === 'image') {
-    const previewImg = document.querySelector('#imagePreview img');
-    if (previewImg) {
-      image_url = previewImg.getAttribute('src');
-    } else {
-      const file = document.getElementById('noteImageFile').files[0];
-      if (!file) { showToast('Please select an image.'); return; }
+    const pv = document.querySelector('#imagePreview img');
+    if (pv) { image_url = pv.getAttribute('src'); }
+    else {
+      const f = document.getElementById('noteImageFile').files[0];
+      if (!f) { showToast('Select an image.'); return; }
       showToast('Uploading...');
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const res = await api('POST', '/upload/image', { imageBase64: e.target.result });
-        if (!res.ok) { showToast(res.data.error || 'Upload failed.'); return; }
-        image_url = res.data.url;
-        await doSave({ topic_id: topicId, title, type, content_html, url, image_url });
-      };
-      reader.readAsDataURL(file);
-      return;
+      const rdr = new FileReader();
+      rdr.onload = async function(e) { const r = await api('POST','/upload/image',{imageBase64:e.target.result}); if(!r.ok){showToast('Upload failed.');return;} await doSave({topic_id:topicId,title,type,content_html,url,image_url:r.data.url}); };
+      rdr.readAsDataURL(f); return;
     }
   }
-
   await doSave({ topic_id: topicId, title, type, content_html, url, image_url });
 }
 
 async function doSave(body) {
-  const btn = document.getElementById('saveNoteBtn');
-  btn.disabled = true;
-  btn.textContent = 'Saving...';
-
-  let res;
-  if (editingNoteId) {
-    res = await api('PUT', `/notes/${editingNoteId}`, body);
-  } else {
-    res = await api('POST', '/notes', body);
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Save Note';
-
-  if (!res.ok) { showToast(res.data.error || 'Failed to save.'); return; }
-  closeEditor();
-  showToast(editingNoteId ? 'Note updated.' : 'Note created.');
-  loadData();
+  const btn = document.getElementById('saveNoteBtn'); btn.disabled = true; btn.textContent = 'Saving...';
+  const res = editingNoteId ? await api('PUT', `/notes/${editingNoteId}`, body) : await api('POST', '/notes', body);
+  btn.disabled = false; btn.textContent = 'Save Note';
+  if (!res.ok) { showToast(res.data.error || 'Failed.'); return; }
+  closeEditor(); showToast(editingNoteId ? 'Updated.' : 'Created.'); loadData();
 }
 
-async function moveNote(id, dir) {
-  const res = await api('POST', `/notes/${id}/move`, { direction: dir });
-  if (!res.ok) { showToast(res.data.error || 'Cannot move further.'); return; }
-  loadData();
-}
+async function moveNote(id, dir) { await api('POST', `/notes/${id}/move`, { direction: dir }); loadData(); }
+async function deleteNote(id) { if (!confirm('Delete this note?')) return; await api('DELETE', `/notes/${id}`); showToast('Deleted.'); loadData(); }
+function editTopic() { const n = prompt('Edit topic:', topic.name); if (n && n.trim()) { api('PUT', `/topics/${topicId}`, { name: n.trim() }).then(() => loadData()); } }
+async function deleteTopic() { if (!confirm(`Delete "${topic.name}"?`)) return; const r = await api('DELETE', `/topics/${topicId}`); if (r.ok) window.location.href = `/chapter.html?id=${topic.chapter.id}`; }
 
-async function deleteNote(id) {
-  if (!confirm('Delete this note permanently?')) return;
-  const res = await api('DELETE', `/notes/${id}`);
-  if (!res.ok) { showToast(res.data.error || 'Delete failed.'); return; }
-  showToast('Note deleted.');
-  loadData();
-}
-
-function editTopic() {
-  const n = prompt('Edit topic name:', topic.name);
-  if (n && n.trim()) { api('PUT', `/topics/${topicId}`, { name: n.trim() }).then(() => loadData()); showToast('Topic updated.'); }
-}
-
-async function deleteTopic() {
-  if (!confirm(`Delete "${topic.name}" and all its notes?`)) return;
-  const res = await api('DELETE', `/topics/${topicId}`);
-  if (res.ok) { window.location.href = `/chapter.html?id=${topic.chapter.id}`; } else { showToast('Delete failed.'); }
-}
-
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeEditor(); } });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeEditor(); });
 
 let searchTimeout;
 document.getElementById('searchInput').addEventListener('input', function() {
@@ -763,10 +650,10 @@ async function doSearch(q) {
   const dd = document.getElementById('searchDropdown');
   const { ok, data } = await api('GET', `/search?q=${encodeURIComponent(q)}`);
   if (!ok) return;
-  let html = '';
-  if (data.subjects.length) { html += '<div class="section-label">Subjects</div>'; html += data.subjects.map(s => `<a href="/subject.html?id=${s.id}" class="result-item">${esc(s.name)}</a>`).join(''); }
-  if (data.notes.length) { html += '<div class="section-label">Notes</div>'; html += data.notes.map(n => `<a href="/topic.html?id=${n.topic.id}" class="result-item">${esc(n.title)}</a>`).join(''); }
-  dd.innerHTML = html || '<div style="padding:16px;color:var(--t4);font-size:.85rem">No results</div>';
+  let h = '';
+  if (data.subjects.length) { h += '<div class="section-label">Subjects</div>'; h += data.subjects.map(s => `<a href="/subject.html?id=${s.id}" class="result-item">${esc(s.name)}</a>`).join(''); }
+  if (data.notes.length) { h += '<div class="section-label">Notes</div>'; h += data.notes.map(n => `<a href="/topic.html?id=${n.topic.id}" class="result-item">${esc(n.title)}</a>`).join(''); }
+  dd.innerHTML = h || '<div style="padding:16px;color:var(--t4);font-size:.85rem">No results</div>';
   dd.classList.add('open');
 }
 document.addEventListener('click', function(e) { if (!document.getElementById('searchInput').contains(e.target) && !document.getElementById('searchDropdown').contains(e.target)) { document.getElementById('searchDropdown').classList.remove('open'); } });
