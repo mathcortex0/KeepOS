@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>KeepOS — Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+:root{
+  --bg:#f8f9fa;--surf:#ffffff;--hov:#f1f3f4;--border:#dadce0;
+  --t1:#202124;--t2:#3c4043;--t3:#5f6368;--t4:#80868b;
+  --accent:#00d4aa;--accent-h:#00b894;
+  --gs:'Plus Jakarta Sans',system-ui,sans-serif;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'DM Mono',monospace;
+  --hh:64px;--r:4px;--rl:12px;--tr:.2s cubic-bezier(.4,0,.2,1);
+  --safe-bottom:env(safe-area-inset-bottom,20px);
+}
+body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent}
+.header{position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--surf);border-bottom:1px solid var(--border);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.header-left{display:flex;align-items:center;gap:12px}
+.hamburger{width:44px;height:44px;border:none;background:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);transition:background var(--tr);flex-shrink:0}
+.hamburger:hover{background:var(--hov)}
+.hamburger svg{width:22px;height:22px}
+.logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-wrap img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.logo-wrap span{font-family:var(--serif);font-size:1.25rem;font-weight:600;color:var(--t1)}
+.header-center{flex:1;max-width:480px;margin:0 16px}
+.search-wrap{position:relative}
+.search-input{width:100%;padding:10px 14px 10px 44px;border:1px solid var(--border);border-radius:100px;font-family:var(--gs);font-size:.9rem;color:var(--t1);background:var(--hov);outline:none;transition:all var(--tr);min-height:44px}
+.search-input:focus{background:var(--surf);border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,170,.15)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t4);pointer-events:none}
+.search-icon svg{width:18px;height:18px}
+.header-right{display:flex;align-items:center;gap:6px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--gs);font-weight:600;font-size:14px;color:#fff;cursor:pointer;flex-shrink:0;border:2px solid transparent;position:relative}
+.avatar:hover{border-color:var(--border)}
+.avatar-menu{position:absolute;top:100%;right:0;margin-top:8px;background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:180px;display:none;z-index:200}
+.avatar-menu.open{display:block}
+.avatar-menu a,.avatar-menu button{display:flex;align-items:center;gap:10px;padding:12px 18px;width:100%;text-decoration:none;color:var(--t2);font-family:var(--gs);font-size:.85rem;background:none;border:none;cursor:pointer;text-align:left;transition:background var(--tr)}
+.avatar-menu a:hover,.avatar-menu button:hover{background:var(--hov)}
+.avatar-menu a svg,.avatar-menu button svg{width:16px;height:16px;flex-shrink:0}
+.avatar-menu .divider{border-top:1px solid var(--border);margin:4px 0}
+.main{flex:1;padding-top:var(--hh)}
+.content{max-width:900px;margin:0 auto;padding:32px 24px}
+.page-title{font-family:var(--serif);font-size:1.6rem;font-weight:600;color:var(--t1);margin-bottom:4px}
+.page-subtitle{font-size:.9rem;color:var(--t3);margin-bottom:28px}
+.result-section{margin-bottom:32px}
+.result-section h2{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--t1);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.result-item{display:block;padding:12px 16px;border-radius:var(--r);text-decoration:none;color:var(--t2);transition:background var(--tr);margin-bottom:2px}
+.result-item:hover{background:var(--hov)}
+.result-item .ri-title{font-weight:600;color:var(--t1);margin-bottom:2px}
+.result-item .ri-breadcrumb{font-size:.75rem;color:var(--t4);margin-bottom:4px}
+.result-item .ri-snippet{font-size:.82rem;color:var(--t3);line-height:1.5}
+.result-item mark{background:rgba(0,212,170,.2);color:var(--t1);padding:0 2px;border-radius:2px}
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state svg{width:80px;height:80px;color:var(--t4);margin-bottom:16px}
+.empty-state h3{font-family:var(--serif);font-size:1.3rem;color:var(--t1);margin-bottom:6px}
+.empty-state p{font-size:.9rem;color:var(--t3)}
+.footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
+.footer-inner{max-width:900px;margin:0 auto;padding:40px 24px 24px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.fc h4{font-family:var(--serif);font-size:.95rem;font-weight:600;color:var(--t2);margin-bottom:12px}
+.fc p{font-size:.8rem;color:var(--t3);line-height:1.7}
+.fc a{display:block;font-size:.8rem;color:var(--t3);text-decoration:none;line-height:2.4;padding:2px 0}
+.fc a:hover{color:var(--accent)}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.footer-bottom{max-width:900px;margin:0 auto;padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--t4);flex-wrap:wrap;gap:8px;padding-bottom:calc(16px + var(--safe-bottom))}
+.footer-links{display:flex;gap:20px}
+.footer-links a{color:var(--t4);text-decoration:none;font-size:.75rem}
+.footer-links a:hover{color:var(--accent)}
+.toast{position:fixed;bottom:24px;left:24px;z-index:9999;padding:14px 24px;border-radius:var(--r);background:#323232;color:#f5f5f5;font-size:.875rem;box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14),0 1px 18px rgba(0,0,0,.12);transform:translateY(80px);opacity:0;transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;bottom:calc(24px + var(--safe-bottom))}
+.toast.show{transform:translateY(0);opacity:1}
+@media(max-width:600px){.header{padding:0 12px}.header-center{max-width:260px}.footer-inner{grid-template-columns:1fr;gap:20px}.footer-bottom{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <a href="/index.html" class="logo-wrap">
+      <img src="/images/keepos.png" alt="KeepOS" height="32" onerror="this.style.display='none'">
+      <span>KeepOS</span>
+    </a>
+  </div>
+  <div class="header-center">
+    <div class="search-wrap">
+      <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search your vault..." autocomplete="off" autofocus>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="avatar" id="avatarBtn" onclick="toggleAvatarMenu()">K</div>
+    <div class="avatar-menu" id="avatarMenu">
+      <a href="/settings.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Settings</a>
+      <div class="divider"></div>
+      <button onclick="lock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Lock</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="content">
+    <h1 class="page-title">Search Results</h1>
+    <p class="page-subtitle" id="resultCount">Type to search your knowledge vault</p>
+    <div id="resultsContainer"></div>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <h3>No results found</h3>
+      <p>Try a different search term or browse from the dashboard.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="fc"><div class="footer-brand"><img src="/images/keepos.png" alt="KeepOS" height="24" style="border-radius:50%" onerror="this.style.display='none'"><span style="font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--t2)">KeepOS</span></div><p>Your personal knowledge vault.</p></div>
+    <div class="fc"><h4>Platform</h4><a href="/index.html">Dashboard</a><a href="/search.html">Search</a></div>
+    <div class="fc"><h4>Support</h4><a href="#">Help</a><a href="#">Contact</a></div>
+    <div class="fc"><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2025 KeepOS.</span><div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+const token = localStorage.getItem('keepos_token');
+const user = JSON.parse(localStorage.getItem('keepos_user') || 'null');
+if (!token || !user) { window.location.href = '/login.html'; }
+
+async function api(method, path) {
+  try {
+    const res = await fetch(API + path, { method, headers: { 'Authorization': 'Bearer ' + token } });
+    const data = await res.json();
+    return { ok: res.ok, data, status: res.status };
+  } catch(e) { return { ok: false, data: { error: 'Network error.' }, status: 0 }; }
+}
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s || ''); return d.innerHTML; }
+function toggleAvatarMenu() { document.getElementById('avatarMenu').classList.toggle('open'); }
+document.addEventListener('click', function(e) { if (!document.getElementById('avatarBtn').contains(e.target) && !document.getElementById('avatarMenu').contains(e.target)) { document.getElementById('avatarMenu').classList.remove('open'); } });
+function lock() { localStorage.removeItem('keepos_token'); localStorage.removeItem('keepos_user'); window.location.href = '/login.html'; }
+if (user && user.email) { document.getElementById('avatarBtn').textContent = user.email[0].toUpperCase(); }
+
+const urlParams = new URLSearchParams(window.location.search);
+const initialQ = urlParams.get('q') || '';
+if (initialQ) { document.getElementById('searchInput').value = initialQ; doSearch(initialQ); }
+
+let searchTimeout;
+document.getElementById('searchInput').addEventListener('input', function() {
+  clearTimeout(searchTimeout);
+  const q = this.value.trim();
+  if (q.length < 2) {
+    document.getElementById('resultsContainer').innerHTML = '';
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('resultCount').textContent = 'Type to search your knowledge vault';
+    return;
+  }
+  searchTimeout = setTimeout(() => doSearch(q), 350);
+});
+
+function highlightTerm(text, term) {
+  if (!term || !text) return esc(text);
+  const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escapedTerm})`, 'gi');
+  return esc(text).replace(regex, '<mark>$1</mark>');
+}
+
+async function doSearch(q) {
+  const container = document.getElementById('resultsContainer');
+  const empty = document.getElementById('emptyState');
+  const count = document.getElementById('resultCount');
+
+  container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t4)">Searching...</div>';
+  empty.style.display = 'none';
+
+  const { ok, data } = await api('GET', `/search?q=${encodeURIComponent(q)}`);
+  if (!ok) { container.innerHTML = ''; count.textContent = 'Search failed. Try again.'; return; }
+
+  const total = (data.subjects?.length || 0) + (data.chapters?.length || 0) + (data.topics?.length || 0) + (data.notes?.length || 0);
+  count.textContent = total > 0 ? `Found ${total} result${total !== 1 ? 's' : ''} for "${esc(q)}"` : `No results for "${esc(q)}"`;
+
+  let html = '';
+
+  if (data.subjects && data.subjects.length) {
+    html += '<div class="result-section"><h2>Subjects</h2>';
+    html += data.subjects.map(s => `<a href="/subject.html?id=${s.id}" class="result-item"><div class="ri-title">${highlightTerm(s.name, q)}</div></a>`).join('');
+    html += '</div>';
+  }
+
+  if (data.chapters && data.chapters.length) {
+    html += '<div class="result-section"><h2>Chapters</h2>';
+    html += data.chapters.map(c => `<a href="/chapter.html?id=${c.id}" class="result-item"><div class="ri-title">${highlightTerm(c.name, q)}</div><div class="ri-breadcrumb">${esc(c.subject?.name || '')}</div></a>`).join('');
+    html += '</div>';
+  }
+
+  if (data.topics && data.topics.length) {
+    html += '<div class="result-section"><h2>Topics</h2>';
+    html += data.topics.map(t => `<a href="/topic.html?id=${t.id}" class="result-item"><div class="ri-title">${highlightTerm(t.name, q)}</div><div class="ri-breadcrumb">${esc(t.subject?.name || '')} › ${esc(t.chapter?.name || '')}</div></a>`).join('');
+    html += '</div>';
+  }
+
+  if (data.notes && data.notes.length) {
+    html += '<div class="result-section"><h2>Notes</h2>';
+    html += data.notes.map(n => `<a href="/topic.html?id=${n.topic?.id || ''}" class="result-item"><div class="ri-title">${highlightTerm(n.title, q)}</div><div class="ri-breadcrumb">${esc(n.subject?.name || '')} › ${esc(n.chapter?.name || '')} › ${esc(n.topic?.name || '')}</div><div class="ri-snippet">${highlightTerm(n.snippet || '', q)}</div></a>`).join('');
+    html += '</div>';
+  }
+
+  container.innerHTML = html || '';
+  if (total === 0) { empty.style.display = 'block'; }
+}
+</script>
+</body>
+</html>
