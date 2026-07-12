@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>KeepOS — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+:root{
+  --bg:#f8f9fa;--surf:#ffffff;--hov:#f1f3f4;--border:#dadce0;
+  --t1:#202124;--t2:#3c4043;--t3:#5f6368;--t4:#80868b;
+  --accent:#00d4aa;--accent-h:#00b894;--red:#d93025;--red-bg:#fce8e6;
+  --green:#1e8e3e;--grn-bg:#e6f4ea;
+  --gs:'Plus Jakarta Sans',system-ui,sans-serif;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'DM Mono',monospace;
+  --hh:64px;--r:4px;--rl:12px;--tr:.2s cubic-bezier(.4,0,.2,1);
+  --safe-bottom:env(safe-area-inset-bottom,20px);
+}
+body{
+  font-family:var(--gs);background:var(--bg);color:var(--t2);
+  -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;
+  display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent;
+}
+/* HEADER */
+.header{
+  position:fixed;top:0;left:0;right:0;height:var(--hh);
+  background:var(--surf);border-bottom:1px solid var(--border);
+  z-index:1000;display:flex;align-items:center;
+  justify-content:space-between;padding:0 24px;
+}
+.header-left{display:flex;align-items:center;gap:12px}
+.hamburger{
+  width:44px;height:44px;border:none;background:none;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  color:var(--t3);transition:background var(--tr);flex-shrink:0;
+}
+.hamburger:hover{background:var(--hov)}
+.hamburger svg{width:22px;height:22px}
+.logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-wrap img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.logo-wrap span{font-family:var(--serif);font-size:1.25rem;font-weight:600;color:var(--t1)}
+.header-center{flex:1;max-width:480px;margin:0 16px;position:relative}
+.search-wrap{position:relative}
+.search-input{
+  width:100%;padding:10px 14px 10px 44px;border:1px solid var(--border);border-radius:100px;
+  font-family:var(--gs);font-size:.9rem;color:var(--t1);background:var(--hov);
+  outline:none;transition:all var(--tr);min-height:44px;
+}
+.search-input:focus{background:var(--surf);border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,170,.15)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t4);pointer-events:none}
+.search-icon svg{width:18px;height:18px}
+.search-dropdown{
+  position:absolute;top:100%;left:0;right:0;margin-top:4px;
+  background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+  box-shadow:0 4px 12px rgba(0,0,0,.1);max-height:360px;overflow-y:auto;display:none;z-index:100;
+}
+.search-dropdown.open{display:block}
+.search-dropdown .section-label{
+  padding:10px 16px 4px;font-size:.7rem;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.5px;
+}
+.search-dropdown .result-item{
+  display:flex;align-items:center;gap:10px;padding:10px 16px;
+  text-decoration:none;color:var(--t2);font-size:.85rem;transition:background var(--tr);cursor:pointer;
+}
+.search-dropdown .result-item:hover{background:var(--hov)}
+.search-dropdown .result-item .rs-icon{flex-shrink:0;width:16px;height:16px;color:var(--t4)}
+.header-right{display:flex;align-items:center;gap:6px}
+.avatar{
+  width:36px;height:36px;border-radius:50%;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--gs);font-weight:600;font-size:14px;color:#fff;cursor:pointer;
+  flex-shrink:0;border:2px solid transparent;position:relative;
+}
+.avatar:hover{border-color:var(--border)}
+.avatar-menu{
+  position:absolute;top:100%;right:0;margin-top:8px;
+  background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+  box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:180px;display:none;z-index:200;
+}
+.avatar-menu.open{display:block}
+.avatar-menu a,.avatar-menu button{
+  display:flex;align-items:center;gap:10px;padding:12px 18px;width:100%;
+  text-decoration:none;color:var(--t2);font-family:var(--gs);font-size:.85rem;
+  background:none;border:none;cursor:pointer;text-align:left;transition:background var(--tr);
+}
+.avatar-menu a:hover,.avatar-menu button:hover{background:var(--hov)}
+.avatar-menu a svg,.avatar-menu button svg{width:16px;height:16px;flex-shrink:0}
+.avatar-menu .divider{border-top:1px solid var(--border);margin:4px 0}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;top:var(--hh);left:0;bottom:0;width:260px;
+  background:var(--surf);border-right:1px solid var(--border);z-index:900;
+  transform:translateX(-100%);transition:transform var(--tr);
+  overflow-y:auto;padding:16px 0;
+}
+.sidebar.open{transform:translateX(0)}
+.sidebar-backdrop{
+  position:fixed;inset:0;top:var(--hh);background:rgba(0,0,0,.35);z-index:899;
+  display:none;
+}
+.sidebar-backdrop.open{display:block}
+.sidebar-section{padding:0 16px;margin-bottom:8px}
+.sidebar-label{
+  font-size:.7rem;font-weight:700;color:var(--t4);text-transform:uppercase;
+  letter-spacing:.5px;padding:8px 0;
+}
+.sidebar-subject{
+  display:flex;align-items:center;gap:10px;padding:10px 16px;
+  text-decoration:none;color:var(--t2);font-size:.85rem;
+  border-radius:var(--r);transition:background var(--tr);cursor:pointer;
+}
+.sidebar-subject:hover{background:var(--hov)}
+.sidebar-subject .dot{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
+}
+.sidebar-add{
+  display:flex;align-items:center;gap:8px;padding:10px 16px;
+  color:var(--accent);font-size:.85rem;font-weight:600;cursor:pointer;
+  border-radius:var(--r);transition:background var(--tr);
+}
+.sidebar-add:hover{background:var(--hov)}
+.sidebar-add svg{width:16px;height:16px}
+
+/* MAIN */
+.main{flex:1;padding-top:var(--hh);padding-left:0;transition:padding var(--tr)}
+.main.shifted{padding-left:260px}
+.content{max-width:1080px;margin:0 auto;padding:32px 24px}
+.page-title{font-family:var(--serif);font-size:1.8rem;font-weight:600;color:var(--t1);margin-bottom:4px}
+.page-subtitle{font-size:.9rem;color:var(--t3);margin-bottom:28px}
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.subject-card{
+  background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+  padding:24px;cursor:pointer;transition:all var(--tr);position:relative;text-decoration:none;display:block;
+}
+.subject-card:hover{box-shadow:0 1px 3px rgba(60,64,67,.3),0 4px 8px 3px rgba(60,64,67,.15);transform:translateY(-2px)}
+.subject-card .card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rl) var(--rl) 0 0}
+.subject-card .card-icon{font-size:1.5rem;margin-bottom:12px;color:var(--t4)}
+.subject-card .card-icon svg{width:28px;height:28px}
+.subject-card h3{font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--t1);margin-bottom:4px}
+.subject-card .card-meta{font-size:.78rem;color:var(--t4);margin-bottom:8px}
+.subject-card .card-actions{
+  display:flex;gap:4px;position:absolute;top:16px;right:12px;opacity:0;transition:opacity var(--tr);
+}
+.subject-card:hover .card-actions{opacity:1}
+.icon-btn-sm{
+  width:32px;height:32px;border:none;background:none;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  color:var(--t4);transition:background var(--tr);
+}
+.icon-btn-sm:hover{background:var(--hov)}
+.icon-btn-sm svg{width:14px;height:14px}
+.add-tile{
+  background:var(--surf);border:2px dashed var(--border);border-radius:var(--rl);
+  padding:24px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;cursor:pointer;transition:all var(--tr);min-height:160px;
+  text-decoration:none;color:var(--accent);gap:8px;
+}
+.add-tile:hover{border-color:var(--accent);background:rgba(0,212,170,.04)}
+.add-tile svg{width:32px;height:32px}
+.add-tile span{font-weight:600;font-size:.9rem}
+
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,var(--hov) 25%,#e8eaed 50%,var(--hov) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--r)}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-card{height:150px;border-radius:var(--rl)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state svg{width:80px;height:80px;color:var(--t4);margin-bottom:16px}
+.empty-state h3{font-family:var(--serif);font-size:1.3rem;color:var(--t1);margin-bottom:6px}
+.empty-state p{font-size:.9rem;color:var(--t3);margin-bottom:20px}
+.empty-state .btn{display:inline-flex;width:auto;min-height:44px;padding:12px 28px}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+  padding:32px;width:100%;max-width:460px;box-shadow:0 24px 50px rgba(0,0,0,.3);
+}
+.modal h3{font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--t1);margin-bottom:20px}
+.modal .field{margin-bottom:16px}
+.modal .field-label{display:block;font-size:.75rem;font-weight:600;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.modal .field-input{
+  width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);
+  font-family:var(--gs);font-size:.9rem;color:var(--t1);outline:none;min-height:44px;
+}
+.modal .field-input:focus{border:2px solid var(--accent);padding:9px 13px}
+.modal .color-swatches{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.modal .color-swatch{
+  width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border var(--tr);
+}
+.modal .color-swatch:hover,.modal .color-swatch.selected{border-color:var(--t1)}
+.modal .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.btn-sm{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 18px;
+  font-family:var(--gs);font-size:.85rem;font-weight:600;border:none;
+  border-radius:var(--r);cursor:pointer;transition:all var(--tr);min-height:40px;
+}
+.btn-sm-primary{background:var(--accent);color:#fff}
+.btn-sm-primary:hover{background:var(--accent-h)}
+.btn-sm-outline{background:transparent;color:var(--t2);border:1px solid var(--border)}
+.btn-sm-outline:hover{background:var(--hov)}
+.btn-sm-danger{background:transparent;color:var(--red)}
+.btn-sm-danger:hover{background:var(--red-bg)}
+
+/* FOOTER */
+.footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
+.footer-inner{
+  max-width:1080px;margin:0 auto;padding:40px 24px 24px;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+}
+.fc h4{font-family:var(--serif);font-size:.95rem;font-weight:600;color:var(--t2);margin-bottom:12px}
+.fc p{font-size:.8rem;color:var(--t3);line-height:1.7}
+.fc a{display:block;font-size:.8rem;color:var(--t3);text-decoration:none;line-height:2.4;padding:2px 0}
+.fc a:hover{color:var(--accent)}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.footer-bottom{
+  max-width:1080px;margin:0 auto;padding:16px 24px;
+  border-top:1px solid var(--border);display:flex;
+  justify-content:space-between;align-items:center;
+  font-size:.75rem;color:var(--t4);flex-wrap:wrap;gap:8px;
+  padding-bottom:calc(16px + var(--safe-bottom));
+}
+.footer-links{display:flex;gap:20px}
+.footer-links a{color:var(--t4);text-decoration:none;font-size:.75rem}
+.footer-links a:hover{color:var(--accent)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;left:24px;z-index:9999;
+  padding:14px 24px;border-radius:var(--r);background:#323232;
+  color:#f5f5f5;font-size:.875rem;
+  box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14),0 1px 18px rgba(0,0,0,.12);
+  transform:translateY(80px);opacity:0;
+  transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;
+  bottom:calc(24px + var(--safe-bottom));
+}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:860px){
+  .main.shifted{padding-left:0}
+  .sidebar.open + .sidebar-backdrop.open ~ .main{padding-left:0}
+  .search-dropdown{position:fixed;top:var(--hh);left:0;right:0;margin:0;border-radius:0;max-height:50vh}
+  .footer-inner{grid-template-columns:1fr 1fr;gap:28px}
+}
+@media(max-width:600px){
+  .header{padding:0 12px}
+  .header-center{display:none}
+  .subject-grid{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr;gap:20px}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .modal{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleSidebar()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    </button>
+    <a href="/index.html" class="logo-wrap">
+      <img src="/images/keepos.png" alt="KeepOS" height="32" onerror="this.style.display='none'">
+      <span>KeepOS</span>
+    </a>
+  </div>
+  <div class="header-center">
+    <div class="search-wrap">
+      <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search your vault..." autocomplete="off">
+      <div class="search-dropdown" id="searchDropdown"></div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="avatar" id="avatarBtn" onclick="toggleAvatarMenu()">K</div>
+    <div class="avatar-menu" id="avatarMenu">
+      <a href="/settings.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Settings</a>
+      <div class="divider"></div>
+      <button onclick="lock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Lock</button>
+    </div>
+  </div>
+</header>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Subjects</div>
+    <div id="sidebarSubjects"></div>
+    <div class="sidebar-add" onclick="openSubjectModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      New Subject
+    </div>
+  </div>
+</aside>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<main class="main" id="mainContent">
+  <div class="content">
+    <h1 class="page-title">Your Vault</h1>
+    <p class="page-subtitle" id="statsLine">Loading your knowledge base...</p>
+    <div class="subject-grid" id="subjectGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      <h3>No subjects yet</h3>
+      <p>Create your first subject to start organizing your knowledge.</p>
+      <button class="btn btn-primary" onclick="openSubjectModal()">Create Subject</button>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="subjectModal">
+  <div class="modal">
+    <h3 id="modalTitle">New Subject</h3>
+    <div class="field">
+      <label class="field-label">Name</label>
+      <input type="text" class="field-input" id="subjName" placeholder="e.g. Biology, Programming, History" maxlength="100">
+    </div>
+    <div class="field">
+      <label class="field-label">Color</label>
+      <div class="color-swatches" id="colorSwatches"></div>
+    </div>
+    <div class="field">
+      <label class="field-label">Icon</label>
+      <div class="color-swatches" id="iconPicker"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm btn-sm-outline" onclick="closeSubjectModal()">Cancel</button>
+      <button class="btn-sm btn-sm-primary" id="saveSubjectBtn" onclick="saveSubject()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h3>Delete Subject</h3>
+    <p style="font-size:.9rem;color:var(--t3);margin-bottom:16px" id="deleteMsg"></p>
+    <div class="modal-actions">
+      <button class="btn-sm btn-sm-outline" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn-sm btn-sm-danger" id="confirmDeleteBtn" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="fc">
+      <div class="footer-brand">
+        <img src="/images/keepos.png" alt="KeepOS" height="24" style="border-radius:50%" onerror="this.style.display='none'">
+        <span style="font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--t2)">KeepOS</span>
+      </div>
+      <p>Your personal knowledge vault. Organize, write, and search — all in one place.</p>
+    </div>
+    <div class="fc"><h4>Platform</h4><a href="/index.html">Dashboard</a><a href="/search.html">Search</a></div>
+    <div class="fc"><h4>Support</h4><a href="#">Help</a><a href="#">Contact</a></div>
+    <div class="fc"><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 KeepOS. All rights reserved.</span>
+    <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+const token = localStorage.getItem('keepos_token');
+const user = JSON.parse(localStorage.getItem('keepos_user') || 'null');
+if (!token || !user) { window.location.href = '/login.html'; }
+
+let subjects = [];
+let editingSubjectId = null;
+let deletingSubjectId = null;
+let selectedColor = '#00d4aa';
+let selectedIcon = 'book';
+
+const colors = ['#00d4aa','#1a73e8','#d93025','#f9ab00','#9333ea','#1e8e3e','#e37400','#ec407a','#00acc1','#5c6bc0'];
+const icons = [
+  {key:'book',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'},
+  {key:'code',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>'},
+  {key:'flask',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6v5l4 9H5l4-9V3z"/><line x1="9" y1="12" x2="15" y2="12"/></svg>'},
+  {key:'brain',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v1h3a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1v1a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4v-1H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3V6a4 4 0 0 1 4-4z"/></svg>'},
+  {key:'globe',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'},
+  {key:'chart',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>'}
+];
+
+async function api(method, path, body) {
+  try {
+    const opts = { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token } };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(API + path, opts);
+    const data = await res.json();
+    return { ok: res.ok, data, status: res.status };
+  } catch(e) {
+    return { ok: false, data: { error: 'Network error.' }, status: 0 };
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = String(s || '');
+  return d.innerHTML;
+}
+
+// Sidebar
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarBackdrop').classList.toggle('open');
+  document.getElementById('mainContent').classList.toggle('shifted');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('open');
+  document.getElementById('mainContent').classList.remove('shifted');
+}
+
+// Avatar menu
+function toggleAvatarMenu() {
+  document.getElementById('avatarMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!document.getElementById('avatarBtn').contains(e.target) && !document.getElementById('avatarMenu').contains(e.target)) {
+    document.getElementById('avatarMenu').classList.remove('open');
+  }
+});
+
+function lock() {
+  localStorage.removeItem('keepos_token');
+  localStorage.removeItem('keepos_user');
+  window.location.href = '/login.html';
+}
+
+// Avatar initial
+if (user && user.email) {
+  document.getElementById('avatarBtn').textContent = user.email[0].toUpperCase();
+}
+
+// Load subjects
+async function loadSubjects() {
+  const grid = document.getElementById('subjectGrid');
+  const empty = document.getElementById('emptyState');
+  const statsLine = document.getElementById('statsLine');
+
+  grid.innerHTML = '<div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>';
+
+  const { ok, data } = await api('GET', '/subjects');
+  if (!ok) { grid.innerHTML = ''; statsLine.textContent = 'Failed to load. Please refresh.'; return; }
+
+  subjects = data;
+  renderSidebar();
+  renderGrid();
+
+  const totalChapters = subjects.reduce((s, sub) => s + (sub.chapter_count || 0), 0);
+  const totalTopics = subjects.reduce((s, sub) => s + (sub.topic_count || 0), 0);
+  const totalNotes = subjects.reduce((s, sub) => s + (sub.note_count || 0), 0);
+  statsLine.textContent = `${subjects.length} subject${subjects.length !== 1 ? 's' : ''} · ${totalChapters} chapters · ${totalTopics} topics · ${totalNotes} notes`;
+}
+
+function renderSidebar() {
+  const el = document.getElementById('sidebarSubjects');
+  el.innerHTML = subjects.map(s =>
+    `<a href="/subject.html?id=${s.id}" class="sidebar-subject">
+      <span class="dot" style="background:${esc(s.color)}"></span>${esc(s.name)}
+    </a>`
+  ).join('');
+}
+
+function renderGrid() {
+  const grid = document.getElementById('subjectGrid');
+  const empty = document.getElementById('emptyState');
+
+  if (subjects.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = subjects.map(s => {
+    const iconData = icons.find(i => i.key === s.icon) || icons[0];
+    return `
+    <a href="/subject.html?id=${s.id}" class="subject-card">
+      <div class="card-accent" style="background:${esc(s.color)}"></div>
+      <div class="card-actions">
+        <button class="icon-btn-sm" onclick="event.preventDefault();event.stopPropagation();openSubjectModal(${s.id})" title="Edit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="icon-btn-sm" onclick="event.preventDefault();event.stopPropagation();openDeleteModal(${s.id})" title="Delete">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+      <div class="card-icon">${iconData.svg}</div>
+      <h3>${esc(s.name)}</h3>
+      <div class="card-meta">${s.chapter_count || 0} chapters · ${s.topic_count || 0} topics · ${s.note_count || 0} notes</div>
+    </a>`;
+  }).join('') + `
+  <div class="add-tile" onclick="openSubjectModal()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+    <span>New Subject</span>
+  </div>`;
+}
+
+// Subject Modal
+function openSubjectModal(id) {
+  editingSubjectId = id || null;
+  const modal = document.getElementById('subjectModal');
+  document.getElementById('modalTitle').textContent = id ? 'Edit Subject' : 'New Subject';
+  selectedColor = '#00d4aa';
+  selectedIcon = 'book';
+
+  if (id) {
+    const s = subjects.find(x => x.id === id);
+    if (s) {
+      document.getElementById('subjName').value = s.name;
+      selectedColor = s.color;
+      selectedIcon = s.icon;
+    }
+  } else {
+    document.getElementById('subjName').value = '';
+  }
+
+  // Render color swatches
+  document.getElementById('colorSwatches').innerHTML = colors.map(c =>
+    `<div class="color-swatch${c === selectedColor ? ' selected' : ''}" style="background:${c}" onclick="selectColor('${c}')"></div>`
+  ).join('');
+
+  // Render icon picker
+  document.getElementById('iconPicker').innerHTML = icons.map(i =>
+    `<div class="color-swatch${i.key === selectedIcon ? ' selected' : ''}" style="width:36px;height:36px;background:var(--hov);display:flex;align-items:center;justify-content:center" onclick="selectIcon('${i.key}')">${i.svg.replace('width="24" height="24"','width="20" height="20"')}</div>`
+  ).join('');
+
+  modal.classList.add('open');
+}
+
+function closeSubjectModal() {
+  document.getElementById('subjectModal').classList.remove('open');
+  editingSubjectId = null;
+}
+
+function selectColor(c) { selectedColor = c; openSubjectModal(editingSubjectId); }
+function selectIcon(k) { selectedIcon = k; openSubjectModal(editingSubjectId); }
+
+async function saveSubject() {
+  const name = document.getElementById('subjName').value.trim();
+  if (!name) { showToast('Please enter a subject name.'); return; }
+
+  const btn = document.getElementById('saveSubjectBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  let res;
+  if (editingSubjectId) {
+    res = await api('PUT', `/subjects/${editingSubjectId}`, { name, color: selectedColor, icon: selectedIcon });
+  } else {
+    res = await api('POST', '/subjects', { name, color: selectedColor, icon: selectedIcon });
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Save';
+
+  if (!res.ok) { showToast(res.data.error || 'Failed to save.'); return; }
+
+  closeSubjectModal();
+  showToast(editingSubjectId ? 'Subject updated.' : 'Subject created.');
+  loadSubjects();
+}
+
+// Delete Modal
+function openDeleteModal(id) {
+  deletingSubjectId = id;
+  const s = subjects.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('deleteMsg').textContent =
+    `"${s.name}" will be permanently deleted along with ${s.chapter_count || 0} chapters, ${s.topic_count || 0} topics, and ${s.note_count || 0} notes. This cannot be undone.`;
+  document.getElementById('deleteModal').classList.add('open');
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('open');
+  deletingSubjectId = null;
+}
+
+async function confirmDelete() {
+  if (!deletingSubjectId) return;
+  const res = await api('DELETE', `/subjects/${deletingSubjectId}`);
+  if (!res.ok) { showToast(res.data.error || 'Delete failed.'); closeDeleteModal(); return; }
+  closeDeleteModal();
+  showToast('Subject deleted.');
+  loadSubjects();
+}
+
+// Close modals on escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closeSubjectModal(); closeDeleteModal(); }
+});
+
+// Search
+let searchTimeout;
+document.getElementById('searchInput').addEventListener('input', function() {
+  clearTimeout(searchTimeout);
+  const q = this.value.trim();
+  if (q.length < 2) { document.getElementById('searchDropdown').classList.remove('open'); return; }
+  searchTimeout = setTimeout(() => doSearch(q), 300);
+});
+
+async function doSearch(q) {
+  const dd = document.getElementById('searchDropdown');
+  const { ok, data } = await api('GET', `/search?q=${encodeURIComponent(q)}`);
+  if (!ok) return;
+
+  let html = '';
+  if (data.subjects.length) {
+    html += '<div class="section-label">Subjects</div>';
+    html += data.subjects.map(s => `<a href="/subject.html?id=${s.id}" class="result-item"><span class="rs-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>${esc(s.name)}</a>`).join('');
+  }
+  if (data.notes.length) {
+    html += '<div class="section-label">Notes</div>';
+    html += data.notes.map(n => `<a href="/topic.html?id=${n.topic.id}" class="result-item"><span class="rs-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>${esc(n.title)}</a>`).join('');
+  }
+  dd.innerHTML = html || '<div style="padding:16px;color:var(--t4);font-size:.85rem">No results</div>';
+  dd.classList.add('open');
+}
+
+document.addEventListener('click', function(e) {
+  if (!document.getElementById('searchInput').contains(e.target) && !document.getElementById('searchDropdown').contains(e.target)) {
+    document.getElementById('searchDropdown').classList.remove('open');
+  }
+});
+
+// Init
+loadSubjects();
+</script>
+</body>
+</html>
