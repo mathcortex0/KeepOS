@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>KeepOS — Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+:root{
+  --bg:#f8f9fa;--surf:#ffffff;--hov:#f1f3f4;--border:#dadce0;
+  --t1:#202124;--t2:#3c4043;--t3:#5f6368;--t4:#80868b;
+  --accent:#00d4aa;--accent-h:#00b894;--red:#d93025;--red-bg:#fce8e6;
+  --green:#1e8e3e;--grn-bg:#e6f4ea;
+  --gs:'Plus Jakarta Sans',system-ui,sans-serif;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'DM Mono',monospace;
+  --hh:64px;--r:4px;--rl:12px;--tr:.2s cubic-bezier(.4,0,.2,1);
+  --safe-bottom:env(safe-area-inset-bottom,20px);
+}
+body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent}
+.header{position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--surf);border-bottom:1px solid var(--border);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.header-left{display:flex;align-items:center;gap:12px}
+.hamburger{width:44px;height:44px;border:none;background:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);transition:background var(--tr);flex-shrink:0}
+.hamburger:hover{background:var(--hov)}
+.hamburger svg{width:22px;height:22px}
+.logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-wrap img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.logo-wrap span{font-family:var(--serif);font-size:1.25rem;font-weight:600;color:var(--t1)}
+.header-right{display:flex;align-items:center;gap:6px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--gs);font-weight:600;font-size:14px;color:#fff;cursor:pointer;flex-shrink:0;border:2px solid transparent;position:relative}
+.avatar:hover{border-color:var(--border)}
+.avatar-menu{position:absolute;top:100%;right:0;margin-top:8px;background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:180px;display:none;z-index:200}
+.avatar-menu.open{display:block}
+.avatar-menu a,.avatar-menu button{display:flex;align-items:center;gap:10px;padding:12px 18px;width:100%;text-decoration:none;color:var(--t2);font-family:var(--gs);font-size:.85rem;background:none;border:none;cursor:pointer;text-align:left;transition:background var(--tr)}
+.avatar-menu a:hover,.avatar-menu button:hover{background:var(--hov)}
+.avatar-menu a svg,.avatar-menu button svg{width:16px;height:16px;flex-shrink:0}
+.avatar-menu .divider{border-top:1px solid var(--border);margin:4px 0}
+.main{flex:1;padding-top:var(--hh)}
+.content{max-width:640px;margin:0 auto;padding:32px 24px}
+.page-title{font-family:var(--serif);font-size:1.6rem;font-weight:600;color:var(--t1);margin-bottom:4px}
+.page-subtitle{font-size:.9rem;color:var(--t3);margin-bottom:28px}
+.setting-card{background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);padding:24px;margin-bottom:20px}
+.setting-card h3{font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--t1);margin-bottom:6px}
+.setting-card .desc{font-size:.82rem;color:var(--t4);margin-bottom:16px}
+.field{margin-bottom:14px}
+.field-label{display:block;font-size:.75rem;font-weight:600;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.field-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);font-family:var(--gs);font-size:.9rem;color:var(--t1);outline:none;min-height:44px;transition:border var(--tr)}
+.field-input:focus{border:2px solid var(--accent);padding:9px 13px}
+.field-input:disabled{background:var(--hov);color:var(--t3)}
+.btn-sm{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;font-family:var(--gs);font-size:.85rem;font-weight:600;border:none;border-radius:var(--r);cursor:pointer;transition:all var(--tr);min-height:40px}
+.btn-sm-primary{background:var(--accent);color:#fff}
+.btn-sm-primary:hover{background:var(--accent-h)}
+.btn-sm-primary:disabled{background:#c4c7cc;color:var(--t4);cursor:not-allowed}
+.alert{padding:10px 14px;border-radius:var(--r);font-size:.8rem;margin-top:10px;display:none}
+.alert-s{display:block;background:var(--grn-bg);color:var(--green);border:1px solid rgba(30,142,62,.2)}
+.alert-e{display:block;background:var(--red-bg);color:var(--red);border:1px solid rgba(217,48,37,.2)}
+.readonly-field{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--hov);border-radius:var(--r);font-family:var(--mono);font-size:.85rem;color:var(--t2);min-height:44px}
+.footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
+.footer-inner{max-width:640px;margin:0 auto;padding:40px 24px 24px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.fc h4{font-family:var(--serif);font-size:.95rem;font-weight:600;color:var(--t2);margin-bottom:12px}
+.fc p{font-size:.8rem;color:var(--t3);line-height:1.7}
+.fc a{display:block;font-size:.8rem;color:var(--t3);text-decoration:none;line-height:2.4;padding:2px 0}
+.fc a:hover{color:var(--accent)}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.footer-bottom{max-width:640px;margin:0 auto;padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--t4);flex-wrap:wrap;gap:8px;padding-bottom:calc(16px + var(--safe-bottom))}
+.footer-links{display:flex;gap:20px}
+.footer-links a{color:var(--t4);text-decoration:none;font-size:.75rem}
+.footer-links a:hover{color:var(--accent)}
+.toast{position:fixed;bottom:24px;left:24px;z-index:9999;padding:14px 24px;border-radius:var(--r);background:#323232;color:#f5f5f5;font-size:.875rem;box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14),0 1px 18px rgba(0,0,0,.12);transform:translateY(80px);opacity:0;transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;bottom:calc(24px + var(--safe-bottom))}
+.toast.show{transform:translateY(0);opacity:1}
+@media(max-width:600px){.header{padding:0 12px}.footer-inner{grid-template-columns:1fr;gap:20px}.footer-bottom{flex-direction:column;text-align:center}.content{padding:24px 16px}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <button class="hamburger" aria-label="Menu" onclick="window.history.back()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <a href="/index.html" class="logo-wrap">
+      <img src="/images/keepos.png" alt="KeepOS" height="32" onerror="this.style.display='none'">
+      <span>KeepOS</span>
+    </a>
+  </div>
+  <div class="header-right">
+    <div class="avatar" id="avatarBtn" onclick="toggleAvatarMenu()">K</div>
+    <div class="avatar-menu" id="avatarMenu">
+      <a href="/index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard</a>
+      <div class="divider"></div>
+      <button onclick="lock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Lock</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="content">
+    <h1 class="page-title">Settings</h1>
+    <p class="page-subtitle">Manage your account and integrations.</p>
+
+    <div class="setting-card">
+      <h3>Account</h3>
+      <div class="desc">Your email address</div>
+      <div class="readonly-field" id="accountEmail">Loading...</div>
+    </div>
+
+    <div class="setting-card">
+      <h3>Change Password</h3>
+      <div class="desc">You'll need your current password to change it.</div>
+      <div class="field"><label class="field-label">Current Password</label><input type="password" class="field-input" id="cpCurPass" placeholder="Current password"></div>
+      <div class="field"><label class="field-label">New Password</label><input type="password" class="field-input" id="cpNewPass" placeholder="New password" minlength="6"></div>
+      <button class="btn-sm btn-sm-primary" id="cpBtn" onclick="changePassword()">Change Password</button>
+      <div class="alert" id="cpAlert"></div>
+    </div>
+
+    <div class="setting-card">
+      <h3>Change Master Key</h3>
+      <div class="desc">This is your second secret phrase. Keep it safe — you'll need it every time you log in.</div>
+      <div class="field"><label class="field-label">Current Password</label><input type="password" class="field-input" id="mkCurPass" placeholder="Current password"></div>
+      <div class="field"><label class="field-label">New Master Key</label><input type="password" class="field-input" id="mkNewKey" placeholder="New master key phrase" minlength="6"></div>
+      <button class="btn-sm btn-sm-primary" id="mkBtn" onclick="changeMasterKey()">Change Master Key</button>
+      <div class="alert" id="mkAlert"></div>
+    </div>
+
+    <div class="setting-card">
+      <h3>Image Upload (ImgBB)</h3>
+      <div class="desc">Enter your ImgBB API key to enable image uploads in notes. Get a free key at <a href="https://api.imgbb.com" target="_blank" rel="noopener" style="color:var(--accent)">api.imgbb.com</a>.</div>
+      <div class="field"><label class="field-label">ImgBB API Key</label><input type="password" class="field-input" id="imgbbKey" placeholder="Paste your ImgBB API key"></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn-sm btn-sm-primary" id="imgbbSaveBtn" onclick="saveImgbbKey()">Save Key</button>
+        <span style="font-size:.78rem;color:var(--t4)" id="imgbbStatus">Not configured</span>
+      </div>
+      <div class="alert" id="imgbbAlert"></div>
+    </div>
+
+    <div class="setting-card" style="background:var(--yel-bg);border-color:rgba(249,171,0,.2)">
+      <h3 style="color:#e37400">Storage Note</h3>
+      <div class="desc" style="color:#b06000">KeepOS stores all your data in Cloudflare D1. Nothing is duplicated client-side. Your notes, content, and structure live only on the server. Images are stored on ImgBB (if configured). No content encryption — full-text search remains fast and accurate.</div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="fc"><div class="footer-brand"><img src="/images/keepos.png" alt="KeepOS" height="24" style="border-radius:50%" onerror="this.style.display='none'"><span style="font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--t2)">KeepOS</span></div><p>Your personal knowledge vault.</p></div>
+    <div class="fc"><h4>Platform</h4><a href="/index.html">Dashboard</a><a href="/search.html">Search</a></div>
+    <div class="fc"><h4>Support</h4><a href="#">Help</a><a href="#">Contact</a></div>
+    <div class="fc"><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2025 KeepOS. All rights reserved.</span><div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+const token = localStorage.getItem('keepos_token');
+const user = JSON.parse(localStorage.getItem('keepos_user') || 'null');
+if (!token || !user) { window.location.href = '/login.html'; }
+
+async function api(method, path, body) {
+  try {
+    const opts = { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token } };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(API + path, opts);
+    const data = await res.json();
+    return { ok: res.ok, data, status: res.status };
+  } catch(e) { return { ok: false, data: { error: 'Network error.' }, status: 0 }; }
+}
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+function toggleAvatarMenu() { document.getElementById('avatarMenu').classList.toggle('open'); }
+document.addEventListener('click', function(e) { if (!document.getElementById('avatarBtn').contains(e.target) && !document.getElementById('avatarMenu').contains(e.target)) { document.getElementById('avatarMenu').classList.remove('open'); } });
+function lock() { localStorage.removeItem('keepos_token'); localStorage.removeItem('keepos_user'); window.location.href = '/login.html'; }
+if (user && user.email) {
+  document.getElementById('avatarBtn').textContent = user.email[0].toUpperCase();
+  document.getElementById('accountEmail').textContent = user.email;
+}
+
+async function changePassword() {
+  const cur = document.getElementById('cpCurPass').value;
+  const newP = document.getElementById('cpNewPass').value;
+  const alert = document.getElementById('cpAlert');
+  if (!cur || !newP) { alert.className = 'alert alert-e'; alert.textContent = 'Both fields are required.'; return; }
+  if (newP.length < 6) { alert.className = 'alert alert-e'; alert.textContent = 'New password must be at least 6 characters.'; return; }
+  const btn = document.getElementById('cpBtn'); btn.disabled = true; btn.textContent = 'Changing...';
+  const res = await api('POST', '/auth/change-password', { currentPassword: cur, newPassword: newP });
+  btn.disabled = false; btn.textContent = 'Change Password';
+  if (!res.ok) { alert.className = 'alert alert-e'; alert.textContent = res.data.error || 'Failed.'; return; }
+  alert.className = 'alert alert-s'; alert.textContent = 'Password changed. Use it on your next login.';
+  document.getElementById('cpCurPass').value = '';
+  document.getElementById('cpNewPass').value = '';
+}
+
+async function changeMasterKey() {
+  const cur = document.getElementById('mkCurPass').value;
+  const newK = document.getElementById('mkNewKey').value;
+  const alert = document.getElementById('mkAlert');
+  if (!cur || !newK) { alert.className = 'alert alert-e'; alert.textContent = 'Both fields are required.'; return; }
+  if (newK.length < 6) { alert.className = 'alert alert-e'; alert.textContent = 'Master key must be at least 6 characters.'; return; }
+  const btn = document.getElementById('mkBtn'); btn.disabled = true; btn.textContent = 'Changing...';
+  const res = await api('POST', '/auth/change-masterkey', { currentPassword: cur, newMasterKey: newK });
+  btn.disabled = false; btn.textContent = 'Change Master Key';
+  if (!res.ok) { alert.className = 'alert alert-e'; alert.textContent = res.data.error || 'Failed.'; return; }
+  alert.className = 'alert alert-s'; alert.textContent = 'Master key changed. Use it on your next login.';
+  document.getElementById('mkCurPass').value = '';
+  document.getElementById('mkNewKey').value = '';
+}
+
+async function loadImgbbStatus() {
+  const res = await api('GET', '/settings/imgbb');
+  const status = document.getElementById('imgbbStatus');
+  const input = document.getElementById('imgbbKey');
+  if (res.ok && res.data.set) {
+    status.textContent = 'Configured';
+    status.style.color = 'var(--green)';
+    input.placeholder = 'Key saved (hidden for security)';
+  } else {
+    status.textContent = 'Not configured';
+    status.style.color = 'var(--t4)';
+  }
+}
+
+async function saveImgbbKey() {
+  const key = document.getElementById('imgbbKey').value.trim();
+  const alert = document.getElementById('imgbbAlert');
+  if (!key) { alert.className = 'alert alert-e'; alert.textContent = 'Please enter an API key.'; return; }
+  const btn = document.getElementById('imgbbSaveBtn'); btn.disabled = true; btn.textContent = 'Saving...';
+  const res = await api('POST', '/settings/imgbb', { apiKey: key });
+  btn.disabled = false; btn.textContent = 'Save Key';
+  if (!res.ok) { alert.className = 'alert alert-e'; alert.textContent = res.data.error || 'Failed.'; return; }
+  alert.className = 'alert alert-s'; alert.textContent = 'API key saved.';
+  document.getElementById('imgbbKey').value = '';
+  loadImgbbStatus();
+}
+
+loadImgbbStatus();
+</script>
+</body>
+</html>
