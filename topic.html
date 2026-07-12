@@ -127,6 +127,7 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
 .tb-btn{width:36px;height:36px;border:none;background:none;border-radius:var(--r);cursor:pointer;color:var(--t3);display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all var(--tr);font-family:var(--gs);font-weight:600}
 .tb-btn:hover{background:var(--surf);color:var(--t1)}
 .tb-btn svg{width:16px;height:16px}
+.tb-btn.active-btn{background:var(--accent);color:#fff;border-radius:var(--r)}
 .tb-sep{width:1px;height:24px;background:var(--border);margin:6px 4px}
 .editor-area{padding:20px;min-height:300px;outline:none;font-family:var(--gs);font-size:.95rem;color:var(--t1);line-height:1.8}
 .editor-area:empty:before{content:'Start writing...';color:var(--t4)}
@@ -145,6 +146,10 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
 .note-link-card svg{width:20px;height:20px;flex-shrink:0;color:var(--t4)}
 .note-link-card a{color:var(--accent);text-decoration:none;font-weight:500;word-break:break-all}
 .note-link-card a:hover{text-decoration:underline}
+
+/* HTML Source Textarea */
+.html-source-area{display:none;width:100%;min-height:300px;padding:20px;font-family:var(--mono);font-size:.82rem;color:var(--t1);line-height:1.6;border:none;outline:none;resize:vertical;background:var(--hov);border-radius:0 0 var(--r) var(--r)}
+.html-source-area.open{display:block}
 
 .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
 .footer-inner{max-width:1080px;margin:0 auto;padding:40px 24px 24px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
@@ -214,6 +219,7 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
   </div>
 </main>
 
+<!-- EDITOR OVERLAY -->
 <div class="editor-overlay" id="editorOverlay">
   <div class="editor-header">
     <h3 id="editorTitle">New Note</h3>
@@ -259,9 +265,15 @@ body{font-family:var(--gs);background:var(--bg);color:var(--t2);-webkit-font-smo
         <button class="tb-btn" onclick="triggerImageUpload()" title="Image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
         <button class="tb-btn" onclick="insertEquation()" title="Equation">&sum;</button>
         <button class="tb-btn" onclick="insertSmiles()" title="Structure">&#x232C;</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" onclick="toggleHTMLSource()" title="HTML Source" id="htmlSourceBtn">&lt;/&gt;</button>
+        <button class="tb-btn" onclick="togglePreview()" title="Preview" id="previewBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
         <input type="file" id="hiddenImageInput" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
       </div>
       <div class="editor-area" id="editorArea" contenteditable="true"></div>
+      <textarea class="html-source-area" id="htmlSourceArea" placeholder="Paste or edit raw HTML here..."></textarea>
       <div class="editor-footer">
         <button class="btn-sm btn-sm-outline" onclick="closeEditor()">Cancel</button>
         <button class="btn-sm btn-sm-primary" id="saveNoteBtn" onclick="saveNote()">Save Note</button>
@@ -298,6 +310,8 @@ let topic = null;
 let notes = [];
 let editingNoteId = null;
 let currentNoteType = 'text';
+let isPreviewMode = false;
+let isHTMLSourceMode = false;
 
 async function api(method, path, body) {
   try {
@@ -365,7 +379,6 @@ function renderNotes() {
       <div class="note-body">${bodyHtml}</div>
     </div>`;
   }).join('');
-  // Re-render KaTeX and SmilesDrawer
   if (typeof renderMathInElement !== 'undefined') {
     renderMathInElement(document.getElementById('noteFeed'), { delimiters: [{left: '$', right: '$', display: false}] });
   }
@@ -378,20 +391,24 @@ function initSmiles() {
     if (smiles && typeof SmilesDrawer !== 'undefined') {
       try {
         const drawer = new SmilesDrawer.Drawer({ width: 200, height: 200 });
-        SmilesDrawer.parse(smiles, function(tree) {
-          drawer.draw(tree, el, 'light', false);
-        });
+        SmilesDrawer.parse(smiles, function(tree) { drawer.draw(tree, el, 'light', false); });
       } catch(e) {}
     }
   });
 }
 
+// ==================== EDITOR FUNCTIONS ====================
+
 function openEditor(id) {
   editingNoteId = id || null;
   currentNoteType = 'text';
+  isPreviewMode = false;
+  isHTMLSourceMode = false;
+  
   document.getElementById('editorTitle').textContent = id ? 'Edit Note' : 'New Note';
   document.getElementById('noteTitle').value = '';
   document.getElementById('editorArea').innerHTML = '';
+  document.getElementById('htmlSourceArea').value = '';
   document.getElementById('noteUrl').value = '';
   document.getElementById('imagePreview').innerHTML = '';
   document.getElementById('noteImageFile').value = '';
@@ -410,15 +427,117 @@ function openEditor(id) {
   }
 
   setNoteTypeUI(currentNoteType);
+  resetEditorUI();
   document.getElementById('editorOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
   setTimeout(() => document.getElementById('noteTitle').focus(), 100);
 }
 
 function closeEditor() {
+  isPreviewMode = false;
+  isHTMLSourceMode = false;
   document.getElementById('editorOverlay').classList.remove('open');
   document.body.style.overflow = '';
   editingNoteId = null;
+}
+
+function resetEditorUI() {
+  const editorArea = document.getElementById('editorArea');
+  const htmlSourceArea = document.getElementById('htmlSourceArea');
+  const previewBtn = document.getElementById('previewBtn');
+  const htmlSourceBtn = document.getElementById('htmlSourceBtn');
+  
+  isPreviewMode = false;
+  isHTMLSourceMode = false;
+  
+  editorArea.style.display = 'block';
+  editorArea.contentEditable = 'true';
+  htmlSourceArea.style.display = 'none';
+  htmlSourceArea.classList.remove('open');
+  
+  previewBtn.classList.remove('active-btn');
+  previewBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  previewBtn.title = 'Preview';
+  
+  htmlSourceBtn.classList.remove('active-btn');
+  htmlSourceBtn.title = 'HTML Source';
+}
+
+function togglePreview() {
+  const editorArea = document.getElementById('editorArea');
+  const htmlSourceArea = document.getElementById('htmlSourceArea');
+  const previewBtn = document.getElementById('previewBtn');
+  const toolbar = document.getElementById('editorToolbar');
+  
+  // Exit HTML source mode if active
+  if (isHTMLSourceMode) {
+    toggleHTMLSource();
+  }
+  
+  isPreviewMode = !isPreviewMode;
+  
+  if (isPreviewMode) {
+    editorArea.contentEditable = 'false';
+    editorArea.style.background = 'var(--surf)';
+    editorArea.style.border = '1px solid var(--border)';
+    editorArea.style.borderRadius = 'var(--r)';
+    editorArea.style.padding = '20px';
+    toolbar.style.display = 'none';
+    previewBtn.classList.add('active-btn');
+    previewBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+    previewBtn.title = 'Edit';
+    
+    // Render KaTeX in preview
+    if (typeof renderMathInElement !== 'undefined') {
+      renderMathInElement(editorArea, { delimiters: [{left: '$', right: '$', display: false}] });
+    }
+  } else {
+    editorArea.contentEditable = 'true';
+    editorArea.style.background = '';
+    editorArea.style.border = '';
+    editorArea.style.borderRadius = '';
+    editorArea.style.padding = '';
+    toolbar.style.display = 'flex';
+    previewBtn.classList.remove('active-btn');
+    previewBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    previewBtn.title = 'Preview';
+  }
+}
+
+function toggleHTMLSource() {
+  const editorArea = document.getElementById('editorArea');
+  const htmlSourceArea = document.getElementById('htmlSourceArea');
+  const htmlSourceBtn = document.getElementById('htmlSourceBtn');
+  const previewBtn = document.getElementById('previewBtn');
+  
+  // Exit preview mode if active
+  if (isPreviewMode) {
+    togglePreview();
+  }
+  
+  isHTMLSourceMode = !isHTMLSourceMode;
+  
+  if (isHTMLSourceMode) {
+    // Copy editor content to textarea
+    htmlSourceArea.value = editorArea.innerHTML;
+    editorArea.style.display = 'none';
+    htmlSourceArea.style.display = 'block';
+    htmlSourceArea.classList.add('open');
+    htmlSourceBtn.classList.add('active-btn');
+    htmlSourceBtn.title = 'Visual Editor';
+    document.getElementById('editorToolbar').style.display = 'none';
+    previewBtn.style.display = 'none';
+  } else {
+    // Copy textarea content back to editor
+    editorArea.innerHTML = htmlSourceArea.value;
+    editorArea.style.display = 'block';
+    htmlSourceArea.style.display = 'none';
+    htmlSourceArea.classList.remove('open');
+    htmlSourceBtn.classList.remove('active-btn');
+    htmlSourceBtn.title = 'HTML Source';
+    document.getElementById('editorToolbar').style.display = 'flex';
+    previewBtn.style.display = '';
+  }
 }
 
 function setNoteType(type) {
@@ -431,8 +550,23 @@ function setNoteTypeUI(type) {
   document.querySelector(`.type-chip[data-type="${type}"]`)?.classList.add('active');
   document.getElementById('linkOnlyField').style.display = type === 'link' ? 'block' : 'none';
   document.getElementById('imageOnlyField').style.display = type === 'image' ? 'block' : 'none';
-  document.getElementById('editorToolbar').style.display = (type === 'link' || type === 'image') ? 'none' : 'flex';
-  document.getElementById('editorArea').style.display = (type === 'link' || type === 'image') ? 'none' : 'block';
+  
+  const toolbar = document.getElementById('editorToolbar');
+  const editorArea = document.getElementById('editorArea');
+  const previewBtn = document.getElementById('previewBtn');
+  const htmlSourceBtn = document.getElementById('htmlSourceBtn');
+  
+  if (type === 'link' || type === 'image') {
+    toolbar.style.display = 'none';
+    editorArea.style.display = 'none';
+    previewBtn.style.display = 'none';
+    htmlSourceBtn.style.display = 'none';
+  } else {
+    toolbar.style.display = 'flex';
+    editorArea.style.display = 'block';
+    previewBtn.style.display = '';
+    htmlSourceBtn.style.display = '';
+  }
 }
 
 function execCmd(command, value) {
@@ -491,7 +625,6 @@ async function handleImageUpload(input) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 10 * 1024 * 1024) { showToast('Image too large. Max 10MB.'); return; }
-  
   showToast('Uploading image...');
   const reader = new FileReader();
   reader.onload = async function(e) {
@@ -531,6 +664,11 @@ function insertSmiles() {
 async function saveNote() {
   const title = document.getElementById('noteTitle').value.trim();
   if (!title) { showToast('Please enter a title.'); return; }
+
+  // If HTML source mode is active, sync content back
+  if (isHTMLSourceMode) {
+    document.getElementById('editorArea').innerHTML = document.getElementById('htmlSourceArea').value;
+  }
 
   const type = currentNoteType;
   let content_html = '';
