@@ -1,0 +1,7 @@
+name = "keepos"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "."
+[[d1_databases]]
+binding = "KEEP_DB"
+database_name = "keepos-db"
+database_id = "eda93ce7-35cd-4d9a-b60a-540fa0ed4623"
