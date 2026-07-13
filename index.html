@@ -26,7 +26,6 @@ body{
   -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;
   display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent;
 }
-/* HEADER */
 .header{
   position:fixed;top:0;left:0;right:0;height:var(--hh);
   background:var(--surf);border-bottom:1px solid var(--border);
@@ -36,8 +35,8 @@ body{
 .header-left{display:flex;align-items:center;gap:12px}
 .hamburger{
   width:44px;height:44px;border:none;background:none;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  color:var(--t3);transition:background var(--tr);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--t3);transition:background var(--tr);flex-shrink:0;
 }
 .hamburger:hover{background:var(--hov)}
 .hamburger svg{width:22px;height:22px}
@@ -73,8 +72,8 @@ body{
 .avatar{
   width:36px;height:36px;border-radius:50%;background:var(--accent);
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--gs);font-weight:600;font-size:14px;color:#fff;cursor:pointer;
-  flex-shrink:0;border:2px solid transparent;position:relative;
+  font-family:var(--gs);font-weight:600;font-size:14px;
+  color:#fff;cursor:pointer;flex-shrink:0;border:2px solid transparent;position:relative;
 }
 .avatar:hover{border-color:var(--border)}
 .avatar-menu{
@@ -92,7 +91,6 @@ body{
 .avatar-menu a svg,.avatar-menu button svg{width:16px;height:16px;flex-shrink:0}
 .avatar-menu .divider{border-top:1px solid var(--border);margin:4px 0}
 
-/* SIDEBAR */
 .sidebar{
   position:fixed;top:var(--hh);left:0;bottom:0;width:260px;
   background:var(--surf);border-right:1px solid var(--border);z-index:900;
@@ -116,9 +114,7 @@ body{
   border-radius:var(--r);transition:background var(--tr);cursor:pointer;
 }
 .sidebar-subject:hover{background:var(--hov)}
-.sidebar-subject .dot{
-  width:8px;height:8px;border-radius:50%;flex-shrink:0;
-}
+.sidebar-subject .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .sidebar-add{
   display:flex;align-items:center;gap:8px;padding:10px 16px;
   color:var(--accent);font-size:.85rem;font-weight:600;cursor:pointer;
@@ -127,18 +123,26 @@ body{
 .sidebar-add:hover{background:var(--hov)}
 .sidebar-add svg{width:16px;height:16px}
 
-/* MAIN */
 .main{flex:1;padding-top:var(--hh);padding-left:0;transition:padding var(--tr)}
 .main.shifted{padding-left:260px}
 .content{max-width:1080px;margin:0 auto;padding:32px 24px}
 .page-title{font-family:var(--serif);font-size:1.8rem;font-weight:600;color:var(--t1);margin-bottom:4px}
-.page-subtitle{font-size:.9rem;color:var(--t3);margin-bottom:28px}
+.page-subtitle{font-size:.9rem;color:var(--t3);margin-bottom:8px}
+
+/* SORT TOOLBAR */
+.sort-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.sort-toolbar .sort-btn{padding:6px 14px;font-size:.78rem;font-weight:600;border:1px solid var(--border);border-radius:100px;background:transparent;color:var(--t3);cursor:pointer;transition:all var(--tr);font-family:var(--gs)}
+.sort-toolbar .sort-btn:hover{background:var(--hov)}
+.sort-toolbar .sort-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
 .subject-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
 .subject-card{
   background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
   padding:24px;cursor:pointer;transition:all var(--tr);position:relative;text-decoration:none;display:block;
 }
 .subject-card:hover{box-shadow:0 1px 3px rgba(60,64,67,.3),0 4px 8px 3px rgba(60,64,67,.15);transform:translateY(-2px)}
+.subject-card.dragging{opacity:.5;transform:scale(.95)}
+.subject-card.drag-over{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,170,.15)}
 .subject-card .card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rl) var(--rl) 0 0}
 .subject-card .card-icon{font-size:1.5rem;margin-bottom:12px;color:var(--t4)}
 .subject-card .card-icon svg{width:28px;height:28px}
@@ -148,6 +152,9 @@ body{
   display:flex;gap:4px;position:absolute;top:16px;right:12px;opacity:0;transition:opacity var(--tr);
 }
 .subject-card:hover .card-actions{opacity:1}
+.subject-card .drag-handle{position:absolute;top:14px;left:12px;cursor:grab;color:var(--t4);opacity:0;transition:opacity var(--tr);z-index:2}
+.subject-card:hover .drag-handle{opacity:1}
+.subject-card .drag-handle svg{width:16px;height:16px}
 .icon-btn-sm{
   width:32px;height:32px;border:none;background:none;border-radius:50%;
   display:flex;align-items:center;justify-content:center;cursor:pointer;
@@ -165,19 +172,16 @@ body{
 .add-tile svg{width:32px;height:32px}
 .add-tile span{font-weight:600;font-size:.9rem}
 
-/* SKELETON */
 .skeleton{background:linear-gradient(90deg,var(--hov) 25%,#e8eaed 50%,var(--hov) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--r)}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .sk-card{height:150px;border-radius:var(--rl)}
 
-/* EMPTY STATE */
 .empty-state{text-align:center;padding:60px 20px}
 .empty-state svg{width:80px;height:80px;color:var(--t4);margin-bottom:16px}
 .empty-state h3{font-family:var(--serif);font-size:1.3rem;color:var(--t1);margin-bottom:6px}
 .empty-state p{font-size:.9rem;color:var(--t3);margin-bottom:20px}
 .empty-state .btn{display:inline-flex;width:auto;min-height:44px;padding:12px 28px}
 
-/* MODAL */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;
   display:none;align-items:center;justify-content:center;padding:20px;
@@ -213,7 +217,6 @@ body{
 .btn-sm-danger{background:transparent;color:var(--red)}
 .btn-sm-danger:hover{background:var(--red-bg)}
 
-/* FOOTER */
 .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
 .footer-inner{
   max-width:1080px;margin:0 auto;padding:40px 24px 24px;
@@ -235,7 +238,6 @@ body{
 .footer-links a{color:var(--t4);text-decoration:none;font-size:.75rem}
 .footer-links a:hover{color:var(--accent)}
 
-/* TOAST */
 .toast{
   position:fixed;bottom:24px;left:24px;z-index:9999;
   padding:14px 24px;border-radius:var(--r);background:#323232;
@@ -249,7 +251,6 @@ body{
 
 @media(max-width:860px){
   .main.shifted{padding-left:0}
-  .sidebar.open + .sidebar-backdrop.open ~ .main{padding-left:0}
   .search-dropdown{position:fixed;top:var(--hh);left:0;right:0;margin:0;border-radius:0;max-height:50vh}
   .footer-inner{grid-template-columns:1fr 1fr;gap:28px}
 }
@@ -309,12 +310,19 @@ body{
   <div class="content">
     <h1 class="page-title">Your Vault</h1>
     <p class="page-subtitle" id="statsLine">Loading your knowledge base...</p>
+    <div class="sort-toolbar" id="sortToolbar">
+      <span style="font-size:.78rem;color:var(--t4);margin-right:4px">Sort:</span>
+      <button class="sort-btn active" data-sort="custom" onclick="changeSort('custom')">Custom</button>
+      <button class="sort-btn" data-sort="alpha" onclick="changeSort('alpha')">A-Z</button>
+      <button class="sort-btn" data-sort="recent" onclick="changeSort('recent')">Recent</button>
+      <span style="font-size:.72rem;color:var(--t4);margin-left:12px" id="dragHint">Drag subjects to reorder</span>
+    </div>
     <div class="subject-grid" id="subjectGrid"></div>
     <div class="empty-state" id="emptyState" style="display:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
       <h3>No subjects yet</h3>
       <p>Create your first subject to start organizing your knowledge.</p>
-      <button class="btn btn-primary" onclick="openSubjectModal()">Create Subject</button>
+      <button class="btn-sm btn-sm-primary" onclick="openSubjectModal()">Create Subject</button>
     </div>
   </div>
 </main>
@@ -384,6 +392,8 @@ let editingSubjectId = null;
 let deletingSubjectId = null;
 let selectedColor = '#00d4aa';
 let selectedIcon = 'book';
+let sortMode = localStorage.getItem('keepos_sort') || 'custom';
+let draggedItem = null;
 
 const colors = ['#00d4aa','#1a73e8','#d93025','#f9ab00','#9333ea','#1e8e3e','#e37400','#ec407a','#00acc1','#5c6bc0'];
 const icons = [
@@ -402,72 +412,34 @@ async function api(method, path, body) {
     const res = await fetch(API + path, opts);
     const data = await res.json();
     return { ok: res.ok, data, status: res.status };
-  } catch(e) {
-    return { ok: false, data: { error: 'Network error.' }, status: 0 };
-  }
+  } catch(e) { return { ok: false, data: { error: 'Network error.' }, status: 0 }; }
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s || ''); return d.innerHTML; }
 
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = String(s || '');
-  return d.innerHTML;
-}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarBackdrop').classList.toggle('open'); document.getElementById('mainContent').classList.toggle('shifted'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); document.getElementById('mainContent').classList.remove('shifted'); }
+function toggleAvatarMenu() { document.getElementById('avatarMenu').classList.toggle('open'); }
+document.addEventListener('click', function(e) { if (!document.getElementById('avatarBtn').contains(e.target) && !document.getElementById('avatarMenu').contains(e.target)) { document.getElementById('avatarMenu').classList.remove('open'); } });
+function lock() { localStorage.removeItem('keepos_token'); localStorage.removeItem('keepos_user'); window.location.href = '/login.html'; }
+if (user && user.email) { document.getElementById('avatarBtn').textContent = user.email[0].toUpperCase(); }
 
-// Sidebar
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarBackdrop').classList.toggle('open');
-  document.getElementById('mainContent').classList.toggle('shifted');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarBackdrop').classList.remove('open');
-  document.getElementById('mainContent').classList.remove('shifted');
-}
-
-// Avatar menu
-function toggleAvatarMenu() {
-  document.getElementById('avatarMenu').classList.toggle('open');
-}
-document.addEventListener('click', function(e) {
-  if (!document.getElementById('avatarBtn').contains(e.target) && !document.getElementById('avatarMenu').contains(e.target)) {
-    document.getElementById('avatarMenu').classList.remove('open');
-  }
+// Init sort buttons
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.classList.toggle('active', btn.getAttribute('data-sort') === sortMode);
 });
 
-function lock() {
-  localStorage.removeItem('keepos_token');
-  localStorage.removeItem('keepos_user');
-  window.location.href = '/login.html';
-}
-
-// Avatar initial
-if (user && user.email) {
-  document.getElementById('avatarBtn').textContent = user.email[0].toUpperCase();
-}
-
-// Load subjects
 async function loadSubjects() {
   const grid = document.getElementById('subjectGrid');
   const empty = document.getElementById('emptyState');
   const statsLine = document.getElementById('statsLine');
-
   grid.innerHTML = '<div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>';
-
   const { ok, data } = await api('GET', '/subjects');
   if (!ok) { grid.innerHTML = ''; statsLine.textContent = 'Failed to load. Please refresh.'; return; }
-
   subjects = data;
   renderSidebar();
   renderGrid();
-
   const totalChapters = subjects.reduce((s, sub) => s + (sub.chapter_count || 0), 0);
   const totalTopics = subjects.reduce((s, sub) => s + (sub.topic_count || 0), 0);
   const totalNotes = subjects.reduce((s, sub) => s + (sub.note_count || 0), 0);
@@ -475,17 +447,15 @@ async function loadSubjects() {
 }
 
 function renderSidebar() {
-  const el = document.getElementById('sidebarSubjects');
-  el.innerHTML = subjects.map(s =>
-    `<a href="/subject.html?id=${s.id}" class="sidebar-subject">
-      <span class="dot" style="background:${esc(s.color)}"></span>${esc(s.name)}
-    </a>`
+  document.getElementById('sidebarSubjects').innerHTML = subjects.map(s =>
+    `<a href="/subject.html?id=${s.id}" class="sidebar-subject"><span class="dot" style="background:${esc(s.color)}"></span>${esc(s.name)}</a>`
   ).join('');
 }
 
 function renderGrid() {
   const grid = document.getElementById('subjectGrid');
   const empty = document.getElementById('emptyState');
+  const dragHint = document.getElementById('dragHint');
 
   if (subjects.length === 0) {
     grid.innerHTML = '';
@@ -494,11 +464,31 @@ function renderGrid() {
   }
   empty.style.display = 'none';
 
-  grid.innerHTML = subjects.map(s => {
+  let sorted = [...subjects];
+  if (sortMode === 'alpha') {
+    sorted.sort((a, b) => a.name.localeCompare(b.name));
+    dragHint.textContent = '';
+  } else if (sortMode === 'recent') {
+    sorted.sort((a, b) => b.created_at - a.created_at);
+    dragHint.textContent = '';
+  } else {
+    sorted.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+    dragHint.textContent = 'Drag subjects to reorder';
+  }
+
+  grid.innerHTML = '';
+
+  sorted.forEach(s => {
     const iconData = icons.find(i => i.key === s.icon) || icons[0];
-    return `
-    <a href="/subject.html?id=${s.id}" class="subject-card">
+    const card = document.createElement('a');
+    card.href = `/subject.html?id=${s.id}`;
+    card.className = 'subject-card';
+    card.setAttribute('draggable', sortMode === 'custom');
+    card.setAttribute('data-id', s.id);
+
+    card.innerHTML = `
       <div class="card-accent" style="background:${esc(s.color)}"></div>
+      ${sortMode === 'custom' ? '<span class="drag-handle" onclick="event.preventDefault();event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg></span>' : ''}
       <div class="card-actions">
         <button class="icon-btn-sm" onclick="event.preventDefault();event.stopPropagation();openSubjectModal(${s.id})" title="Edit">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -510,74 +500,103 @@ function renderGrid() {
       <div class="card-icon">${iconData.svg}</div>
       <h3>${esc(s.name)}</h3>
       <div class="card-meta">${s.chapter_count || 0} chapters · ${s.topic_count || 0} topics · ${s.note_count || 0} notes</div>
-    </a>`;
-  }).join('') + `
-  <div class="add-tile" onclick="openSubjectModal()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-    <span>New Subject</span>
-  </div>`;
+    `;
+
+    if (sortMode === 'custom') {
+      card.addEventListener('dragstart', handleDragStart);
+      card.addEventListener('dragover', handleDragOver);
+      card.addEventListener('dragleave', handleDragLeave);
+      card.addEventListener('drop', handleDrop);
+      card.addEventListener('dragend', handleDragEnd);
+    }
+
+    grid.appendChild(card);
+  });
+
+  const addTile = document.createElement('div');
+  addTile.className = 'add-tile';
+  addTile.onclick = () => openSubjectModal();
+  addTile.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg><span>New Subject</span>`;
+  grid.appendChild(addTile);
+}
+
+// Drag and Drop handlers
+function handleDragStart(e) {
+  draggedItem = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  this.classList.add('drag-over');
+}
+function handleDragLeave(e) { this.classList.remove('drag-over'); }
+function handleDrop(e) {
+  e.preventDefault();
+  this.classList.remove('drag-over');
+  if (draggedItem !== this) {
+    const grid = document.getElementById('subjectGrid');
+    const cards = [...grid.querySelectorAll('.subject-card')];
+    const fromIndex = cards.indexOf(draggedItem);
+    const toIndex = cards.indexOf(this);
+    const item = subjects.splice(fromIndex, 1)[0];
+    subjects.splice(toIndex, 0, item);
+    subjects.forEach((s, i) => { s.sort_order = i; });
+    saveSubjectOrder();
+    renderGrid();
+  }
+}
+function handleDragEnd(e) {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('drag-over'));
+  draggedItem = null;
+}
+
+function changeSort(mode) {
+  sortMode = mode;
+  localStorage.setItem('keepos_sort', mode);
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-sort') === mode));
+  renderGrid();
+}
+
+async function saveSubjectOrder() {
+  for (const s of subjects) {
+    await api('PUT', `/subjects/${s.id}`, { sort_order: s.sort_order });
+  }
 }
 
 // Subject Modal
 function openSubjectModal(id) {
   editingSubjectId = id || null;
-  const modal = document.getElementById('subjectModal');
   document.getElementById('modalTitle').textContent = id ? 'Edit Subject' : 'New Subject';
   selectedColor = '#00d4aa';
   selectedIcon = 'book';
-
   if (id) {
     const s = subjects.find(x => x.id === id);
-    if (s) {
-      document.getElementById('subjName').value = s.name;
-      selectedColor = s.color;
-      selectedIcon = s.icon;
-    }
-  } else {
-    document.getElementById('subjName').value = '';
-  }
-
-  // Render color swatches
+    if (s) { document.getElementById('subjName').value = s.name; selectedColor = s.color; selectedIcon = s.icon; }
+  } else { document.getElementById('subjName').value = ''; }
   document.getElementById('colorSwatches').innerHTML = colors.map(c =>
-    `<div class="color-swatch${c === selectedColor ? ' selected' : ''}" style="background:${c}" onclick="selectColor('${c}')"></div>`
+    `<div class="color-swatch${c===selectedColor?' selected':''}" style="background:${c}" onclick="selectColor('${c}')"></div>`
   ).join('');
-
-  // Render icon picker
   document.getElementById('iconPicker').innerHTML = icons.map(i =>
-    `<div class="color-swatch${i.key === selectedIcon ? ' selected' : ''}" style="width:36px;height:36px;background:var(--hov);display:flex;align-items:center;justify-content:center" onclick="selectIcon('${i.key}')">${i.svg.replace('width="24" height="24"','width="20" height="20"')}</div>`
+    `<div class="color-swatch${i.key===selectedIcon?' selected':''}" style="width:36px;height:36px;background:var(--hov);display:flex;align-items:center;justify-content:center" onclick="selectIcon('${i.key}')">${i.svg.replace('width="24" height="24"','width="20" height="20"')}</div>`
   ).join('');
-
-  modal.classList.add('open');
+  document.getElementById('subjectModal').classList.add('open');
 }
-
-function closeSubjectModal() {
-  document.getElementById('subjectModal').classList.remove('open');
-  editingSubjectId = null;
-}
-
+function closeSubjectModal() { document.getElementById('subjectModal').classList.remove('open'); editingSubjectId = null; }
 function selectColor(c) { selectedColor = c; openSubjectModal(editingSubjectId); }
 function selectIcon(k) { selectedIcon = k; openSubjectModal(editingSubjectId); }
 
 async function saveSubject() {
   const name = document.getElementById('subjName').value.trim();
   if (!name) { showToast('Please enter a subject name.'); return; }
-
-  const btn = document.getElementById('saveSubjectBtn');
-  btn.disabled = true;
-  btn.textContent = 'Saving...';
-
-  let res;
-  if (editingSubjectId) {
-    res = await api('PUT', `/subjects/${editingSubjectId}`, { name, color: selectedColor, icon: selectedIcon });
-  } else {
-    res = await api('POST', '/subjects', { name, color: selectedColor, icon: selectedIcon });
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Save';
-
+  const btn = document.getElementById('saveSubjectBtn'); btn.disabled = true; btn.textContent = 'Saving...';
+  const res = editingSubjectId
+    ? await api('PUT', `/subjects/${editingSubjectId}`, { name, color: selectedColor, icon: selectedIcon })
+    : await api('POST', '/subjects', { name, color: selectedColor, icon: selectedIcon });
+  btn.disabled = false; btn.textContent = 'Save';
   if (!res.ok) { showToast(res.data.error || 'Failed to save.'); return; }
-
   closeSubjectModal();
   showToast(editingSubjectId ? 'Subject updated.' : 'Subject created.');
   loadSubjects();
@@ -588,64 +607,38 @@ function openDeleteModal(id) {
   deletingSubjectId = id;
   const s = subjects.find(x => x.id === id);
   if (!s) return;
-  document.getElementById('deleteMsg').textContent =
-    `"${s.name}" will be permanently deleted along with ${s.chapter_count || 0} chapters, ${s.topic_count || 0} topics, and ${s.note_count || 0} notes. This cannot be undone.`;
+  document.getElementById('deleteMsg').textContent = `"${s.name}" will be permanently deleted along with ${s.chapter_count || 0} chapters, ${s.topic_count || 0} topics, and ${s.note_count || 0} notes.`;
   document.getElementById('deleteModal').classList.add('open');
 }
-
-function closeDeleteModal() {
-  document.getElementById('deleteModal').classList.remove('open');
-  deletingSubjectId = null;
-}
-
+function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('open'); deletingSubjectId = null; }
 async function confirmDelete() {
   if (!deletingSubjectId) return;
   const res = await api('DELETE', `/subjects/${deletingSubjectId}`);
   if (!res.ok) { showToast(res.data.error || 'Delete failed.'); closeDeleteModal(); return; }
-  closeDeleteModal();
-  showToast('Subject deleted.');
-  loadSubjects();
+  closeDeleteModal(); showToast('Subject deleted.'); loadSubjects();
 }
 
-// Close modals on escape
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') { closeSubjectModal(); closeDeleteModal(); }
-});
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeSubjectModal(); closeDeleteModal(); } });
 
 // Search
 let searchTimeout;
 document.getElementById('searchInput').addEventListener('input', function() {
-  clearTimeout(searchTimeout);
-  const q = this.value.trim();
+  clearTimeout(searchTimeout); const q = this.value.trim();
   if (q.length < 2) { document.getElementById('searchDropdown').classList.remove('open'); return; }
   searchTimeout = setTimeout(() => doSearch(q), 300);
 });
-
 async function doSearch(q) {
   const dd = document.getElementById('searchDropdown');
   const { ok, data } = await api('GET', `/search?q=${encodeURIComponent(q)}`);
   if (!ok) return;
-
   let html = '';
-  if (data.subjects.length) {
-    html += '<div class="section-label">Subjects</div>';
-    html += data.subjects.map(s => `<a href="/subject.html?id=${s.id}" class="result-item"><span class="rs-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>${esc(s.name)}</a>`).join('');
-  }
-  if (data.notes.length) {
-    html += '<div class="section-label">Notes</div>';
-    html += data.notes.map(n => `<a href="/topic.html?id=${n.topic.id}" class="result-item"><span class="rs-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>${esc(n.title)}</a>`).join('');
-  }
+  if (data.subjects.length) { html += '<div class="section-label">Subjects</div>'; html += data.subjects.map(s => `<a href="/subject.html?id=${s.id}" class="result-item"><span class="rs-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>${esc(s.name)}</a>`).join(''); }
+  if (data.notes.length) { html += '<div class="section-label">Notes</div>'; html += data.notes.map(n => `<a href="/topic.html?id=${n.topic.id}" class="result-item"><span class="rs-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>${esc(n.title)}</a>`).join(''); }
   dd.innerHTML = html || '<div style="padding:16px;color:var(--t4);font-size:.85rem">No results</div>';
   dd.classList.add('open');
 }
+document.addEventListener('click', function(e) { if (!document.getElementById('searchInput').contains(e.target) && !document.getElementById('searchDropdown').contains(e.target)) { document.getElementById('searchDropdown').classList.remove('open'); } });
 
-document.addEventListener('click', function(e) {
-  if (!document.getElementById('searchInput').contains(e.target) && !document.getElementById('searchDropdown').contains(e.target)) {
-    document.getElementById('searchDropdown').classList.remove('open');
-  }
-});
-
-// Init
 loadSubjects();
 </script>
 </body>
